@@ -29,7 +29,7 @@ export default function App() {
 
   return (
     <ThemeProvider>
-      <Toaster />
+      <Toaster position="top-end" />
       <HashRouter>
         {mode === 'floating' ? (
           <FloatingWindow />

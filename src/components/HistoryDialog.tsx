@@ -50,8 +50,6 @@ const useStyles = makeStyles({
     display: 'flex',
     flexDirection: 'column',
     gap: '6px',
-    maxHeight: '50vh',
-    overflowY: 'auto',
     minHeight: '120px',
   },
   item: {
@@ -242,11 +240,11 @@ export default function HistoryDialog({
 
   return (
     <Dialog open={open} onOpenChange={(_, data) => onOpenChange(data.open)}>
-      <DialogSurface style={{ maxWidth: '90vw', maxHeight: '90vh' }}>
-        <DialogBody>
+      <DialogSurface style={{ width: 'calc(100vw - 40px)', maxWidth: '1000px', height: 'calc(100vh - 80px)' }}>
+        <DialogBody style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
           <DialogTitle>翻译历史</DialogTitle>
 
-          <div className={styles.toolbar}>
+          <div className={styles.toolbar} style={{ flexShrink: 0 }}>
             <div className={styles.toolbarLeft}>
               <Checkbox
                 ref={allCheckboxRef}
@@ -288,7 +286,7 @@ export default function HistoryDialog({
             </div>
           </div>
 
-          <div className={styles.list}>
+          <div className={styles.list} style={{ flex: '1 1 0', minHeight: 0, overflow: 'auto' }}>
             {loading ? (
               <Spinner />
             ) : history.length === 0 ? (
@@ -336,7 +334,7 @@ export default function HistoryDialog({
             )}
           </div>
 
-          <div className={styles.pager}>
+          <div className={styles.pager} style={{ flexShrink: 0 }}>
             <Dropdown
               value={String(pageSize)}
               onOptionSelect={(_, data) => setPageSize(Number(data.optionValue))}
