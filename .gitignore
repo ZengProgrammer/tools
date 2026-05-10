@@ -29,3 +29,6 @@ src-tauri/gen/
 
 # Tool configs
 opencode.json
+
+# Local data
+data/
