@@ -71,7 +71,7 @@ const useStyles = makeStyles({
   alert: {
     marginTop: '6px',
     backgroundColor: tokens.colorStatusDangerBackground1,
-    border: `1px solid ${tokens.colorStatusDangerStroke1}`,
+    border: `1px solid ${tokens.colorStatusDangerBorder1}`,
     borderRadius: '6px',
     padding: '8px 12px',
     color: tokens.colorStatusDangerForeground1,

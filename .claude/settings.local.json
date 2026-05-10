@@ -9,7 +9,8 @@
       "Bash(Write-Output \"---\")",
       "Bash(Get-ChildItem -Path \"D:\\\\aicode\\\\tools\\\\src\" -Filter \"main.*\" -Name)",
       "Bash(Get-ChildItem -Path \"D:\\\\aicode\\\\tools\" -Filter \"vite.config.*\" -Name)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(pnpm *)"
     ]
   },
   "permissionMode": "auto"

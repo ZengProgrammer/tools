@@ -139,15 +139,15 @@ export default function SqlView() {
     <div className={styles.page}>
       <div className={styles.toolbar}>
         <div className={styles.toolbarLeft}>
-          <Dropdown value={dialect} onOptionSelect={(_, d) => setDialect(d.optionValue!)} style={{ width: '130px' }} size="small">
+          <Dropdown value={dialect} onOptionSelect={(_, d) => setDialect(d.optionValue!)} style={{ width: '130px' }}>
             {dialects.map((d) => <Option key={d.value} value={d.value}>{d.label}</Option>)}
           </Dropdown>
-          <Dropdown value={tabWidth} onOptionSelect={(_, d) => setTabWidth(Number(d.optionValue))} style={{ width: '100px' }} size="small">
+          <Dropdown value={String(tabWidth)} onOptionSelect={(_, d) => setTabWidth(Number(d.optionValue))} style={{ width: '100px' }} size="small">
             <Option value="2">2 空格</Option>
             <Option value="4">4 空格</Option>
             <Option value="0">Tab</Option>
           </Dropdown>
-          <Checkbox checked={uppercase} onChange={(_, d) => setUppercase(d.checked === true)} label="关键字大写" size="small" />
+          <Checkbox checked={uppercase} onChange={(_, d) => setUppercase(d.checked === true)} label="关键字大写" />
         </div>
         <div className={styles.toolbarRight}>
           <Button size="small" appearance="primary" onClick={doFormat}>格式化</Button>
@@ -166,7 +166,7 @@ export default function SqlView() {
           {errorMsg && (
             <div style={{
               marginTop: '6px', backgroundColor: tokens.colorStatusDangerBackground1,
-              border: `1px solid ${tokens.colorStatusDangerStroke1}`, borderRadius: '6px',
+              border: `1px solid ${tokens.colorStatusDangerBorder1}`, borderRadius: '6px',
               padding: '8px 12px', color: tokens.colorStatusDangerForeground1, fontSize: '13px',
             }}>
               {errorMsg}

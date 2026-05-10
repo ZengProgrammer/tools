@@ -1,11 +1,12 @@
 import {
   teamsDarkTheme,
   teamsLightTheme,
-  brandRamp,
   type Theme,
 } from '@fluentui/react-components'
 
-const cyanBrand: typeof brandRamp = {
+type BrandRamp = Record<10|20|30|40|50|60|70|80|90|100|110|120|130|140|150|160, string>
+
+const cyanBrand: BrandRamp = {
   10: '#030303',
   20: '#0d1a1a',
   30: '#003338',
@@ -22,7 +23,7 @@ const cyanBrand: typeof brandRamp = {
   140: '#33f0f8',
   150: '#66f4f8',
   160: '#99f8f8',
-} as typeof brandRamp
+}
 
 export const appDarkTheme: Theme = {
   ...teamsDarkTheme,

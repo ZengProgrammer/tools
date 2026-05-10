@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import {
   Dialog,
   DialogSurface,
@@ -131,6 +131,12 @@ export default function InputHistoryDialog({
   const totalPages = Math.max(1, Math.ceil(total / pageSize))
   const allSelected = records.length > 0 && records.every((r) => selectedIds.has(r.id))
   const anySelected = selectedIds.size > 0
+  const allCheckboxRef = useRef<HTMLInputElement>(null)
+  useEffect(() => {
+    if (allCheckboxRef.current) {
+      allCheckboxRef.current.indeterminate = anySelected && !allSelected
+    }
+  }, [anySelected, allSelected])
 
   function formatTime(dt: string) {
     if (!dt) return ''
@@ -243,8 +249,8 @@ export default function InputHistoryDialog({
           <div className={styles.toolbar}>
             <div className={styles.toolbarLeft}>
               <Checkbox
+                ref={allCheckboxRef}
                 checked={allSelected}
-                indeterminate={anySelected && !allSelected}
                 onChange={toggleAll}
                 label="全选"
               />
@@ -318,13 +324,13 @@ export default function InputHistoryDialog({
 
           <div className={styles.pager}>
             <Dropdown
-              value={pageSize}
+              value={String(pageSize)}
               onOptionSelect={(_, data) => setPageSize(Number(data.optionValue))}
               style={{ width: '80px' }}
               size="small"
             >
               {pageSizes.map((s) => (
-                <Option key={s} value={String(s)}>
+                <Option key={s} value={String(s)} text={`${s}条/页`}>
                   {s}条/页
                 </Option>
               ))}

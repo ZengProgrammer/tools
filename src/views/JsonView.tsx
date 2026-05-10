@@ -147,12 +147,12 @@ export default function JsonView() {
     <div className={styles.page}>
       <div className={styles.toolbar}>
         <div className={styles.toolbarLeft}>
-          <Dropdown value={indent} onOptionSelect={(_, d) => setIndent(Number(d.optionValue))} style={{ width: '100px' }} size="small">
+          <Dropdown value={String(indent)} onOptionSelect={(_, d) => setIndent(Number(d.optionValue))} style={{ width: '100px' }} size="small">
             <Option value="2">2 空格</Option>
             <Option value="4">4 空格</Option>
             <Option value="0">Tab</Option>
           </Dropdown>
-          <Checkbox checked={sortKeys} onChange={(_, d) => setSortKeys(d.checked === true)} label="Key 排序" size="small" />
+          <Checkbox checked={sortKeys} onChange={(_, d) => setSortKeys(d.checked === true)} label="Key 排序" />
           {isValid === true && (
             <span className={`${styles.status} ${styles.statusOk}`}>
               <CheckmarkCircleRegular /> JSON 有效
@@ -181,7 +181,7 @@ export default function JsonView() {
           {errorMsg && (
             <div style={{
               marginTop: '6px', backgroundColor: tokens.colorStatusDangerBackground1,
-              border: `1px solid ${tokens.colorStatusDangerStroke1}`, borderRadius: '6px',
+              border: `1px solid ${tokens.colorStatusDangerBorder1}`, borderRadius: '6px',
               padding: '8px 12px', color: tokens.colorStatusDangerForeground1, fontSize: '13px',
             }}>
               {errorMsg}

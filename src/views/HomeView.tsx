@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { Card, CardHeader, makeStyles, tokens, Body1, Caption1 } from '@fluentui/react-components'
+import { Card, makeStyles, tokens } from '@fluentui/react-components'
 import { MicRegular, CodeRegular, DataAreaRegular } from '@fluentui/react-icons'
 
 const useStyles = makeStyles({
