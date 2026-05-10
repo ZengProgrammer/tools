@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { getCurrentWindow } from '@tauri-apps/api/window'
 import {
   Button,
@@ -20,7 +20,7 @@ import {
   HistoryRegular,
 } from '@fluentui/react-icons'
 import { saveInputHistory } from '../api/deepseek'
-import { useWindowSync } from '../hooks/useWindowSync'
+import { useWindowSync, setSyncCache } from '../hooks/useWindowSync'
 import InputHistoryDialog from '../components/InputHistoryDialog'
 import hljs from 'highlight.js/lib/core'
 import json from 'highlight.js/lib/languages/json'
@@ -72,6 +72,10 @@ export default function JsonView() {
     'json-sync', winId,
     (payload) => { setInput(payload.input); setOutput(payload.output) },
   )
+
+  useEffect(() => {
+    setSyncCache('json-sync', { from: winId, input, output })
+  }, [input, output])
 
   const highlightedOutput = useMemo(
     () => (output ? hljs.highlight(output, { language: 'json' }).value : ''),

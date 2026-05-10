@@ -21,7 +21,7 @@ import {
   HistoryRegular,
 } from '@fluentui/react-icons'
 import { translate, loadSettings, saveSetting } from '../api/deepseek'
-import { useWindowSync } from '../hooks/useWindowSync'
+import { useWindowSync, setSyncCache } from '../hooks/useWindowSync'
 import HistoryDialog from '../components/HistoryDialog'
 import PromptDialog from '../components/PromptDialog'
 
@@ -115,6 +115,10 @@ export default function TranslateView() {
     },
   )
 
+  // Keep sync cache updated with latest local state
+  useEffect(() => {
+    setSyncCache('translate-sync', { from: winId, sourceText, result })
+  }, [sourceText, result])
 
   useEffect(() => {
     loadSettings().then((s) => {
