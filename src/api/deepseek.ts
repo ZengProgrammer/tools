@@ -2,12 +2,11 @@ import { invoke } from '@tauri-apps/api/core'
 
 // ---- Settings ----
 
-export async function loadSettings(): Promise<Record<string, string>> {
-  const json: string = await invoke('load_settings')
-  return JSON.parse(json || '{}')
+export function loadSettings(): Promise<Record<string, string>> {
+  return invoke<string>('load_settings').then((json) => JSON.parse(json || '{}'))
 }
 
-export async function saveSetting(key: string, value: string): Promise<void> {
+export function saveSetting(key: string, value: string): Promise<void> {
   return invoke('save_setting', { key, value })
 }
 
@@ -22,7 +21,7 @@ export interface TranslateParams {
   systemPrompt: string
 }
 
-export async function translate(params: TranslateParams): Promise<string> {
+export function translate(params: TranslateParams): Promise<string> {
   return invoke('translate_text', {
     apiKey: params.apiKey,
     model: params.model,
@@ -45,34 +44,39 @@ export interface HistoryRecord {
   created_at: string
 }
 
-export async function getHistory(offset: number, limit: number, sortDesc = true): Promise<HistoryRecord[]> {
+export function getHistory(offset: number, limit: number, sortDesc = true): Promise<HistoryRecord[]> {
   return invoke('get_translation_history', { offset, limit, sortDesc })
 }
 
-export async function getHistoryCount(): Promise<number> {
+export function getHistoryCount(): Promise<number> {
   return invoke('get_translation_history_count')
 }
 
-export async function deleteHistory(ids: number[]): Promise<void> {
+export function deleteHistory(ids: number[]): Promise<void> {
   return invoke('delete_translation_history', { ids })
 }
 
 // ---- Input History (JSON / SQL) ----
 
-export interface InputRecord { id: number; tool: string; input_text: string; created_at: string }
+export interface InputRecord {
+  id: number
+  tool: string
+  input_text: string
+  created_at: string
+}
 
-export async function saveInputHistory(tool: string, inputText: string): Promise<void> {
+export function saveInputHistory(tool: string, inputText: string): Promise<void> {
   return invoke('save_input_history', { tool, inputText })
 }
 
-export async function getInputHistory(tool: string, offset: number, limit: number, sortDesc = true): Promise<InputRecord[]> {
+export function getInputHistory(tool: string, offset: number, limit: number, sortDesc = true): Promise<InputRecord[]> {
   return invoke('get_input_history', { tool, offset, limit, sortDesc })
 }
 
-export async function getInputHistoryCount(tool: string): Promise<number> {
+export function getInputHistoryCount(tool: string): Promise<number> {
   return invoke('get_input_history_count', { tool })
 }
 
-export async function deleteInputHistory(tool: string, ids: number[]): Promise<void> {
+export function deleteInputHistory(tool: string, ids: number[]): Promise<void> {
   return invoke('delete_input_history', { tool, ids })
 }
