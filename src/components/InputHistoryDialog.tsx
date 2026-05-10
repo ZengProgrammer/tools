@@ -271,7 +271,7 @@ export default function InputHistoryDialog({
     <>
     <Dialog open={open} onOpenChange={(_, data) => onOpenChange(data.open)}>
       <DialogSurface style={{ width: 'calc(100vw - 40px)', maxWidth: '1000px', height: 'calc(100vh - 80px)' }}>
-        <DialogBody style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+        <DialogBody style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
           <DialogTitle>输入历史</DialogTitle>
 
           <div className={styles.toolbar} style={{ flexShrink: 0 }}>
@@ -392,12 +392,13 @@ export default function InputHistoryDialog({
             </div>
             <span className={styles.total}>共 {total} 条</span>
           </div>
+
+          <DialogActions style={{ flexShrink: 0 }}>
+            <Button appearance="primary" onClick={() => onOpenChange(false)}>
+              关闭
+            </Button>
+          </DialogActions>
         </DialogBody>
-        <DialogActions>
-          <Button appearance="primary" onClick={() => onOpenChange(false)}>
-            关闭
-          </Button>
-        </DialogActions>
       </DialogSurface>
     </Dialog>
 
