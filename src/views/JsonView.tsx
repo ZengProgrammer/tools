@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import { getCurrentWindow } from '@tauri-apps/api/window'
 import { emit, listen } from '@tauri-apps/api/event'
 import type { UnlistenFn } from '@tauri-apps/api/event'
@@ -70,6 +70,11 @@ export default function JsonView() {
   const [sortKeys, setSortKeys] = useState(false)
   const [showHistory, setShowHistory] = useState(false)
 
+  const inputRef = useRef(input)
+  const outputRef = useRef(output)
+  useEffect(() => { inputRef.current = input }, [input])
+  useEffect(() => { outputRef.current = output }, [output])
+
   useWindowSync<{ from: string; input: string; output: string }>(
     'json-sync', winId,
     (payload) => { setInput(payload.input); setOutput(payload.output) },
@@ -79,7 +84,7 @@ export default function JsonView() {
     let unlisten: UnlistenFn | null = null
     listen<string>('switch-sync', (e) => {
       if (e.payload === winId) {
-        emit('json-sync', { from: winId, input, output })
+        emit('json-sync', { from: winId, input: inputRef.current, output: outputRef.current })
       } else {
         setInput(''); setOutput(''); setErrorMsg('')
       }

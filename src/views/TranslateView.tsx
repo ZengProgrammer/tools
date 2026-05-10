@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { getCurrentWindow } from '@tauri-apps/api/window'
 import { emit, listen } from '@tauri-apps/api/event'
 import type { UnlistenFn } from '@tauri-apps/api/event'
@@ -101,6 +101,11 @@ export default function TranslateView() {
   const [showPrompt, setShowPrompt] = useState(false)
   const [showHistory, setShowHistory] = useState(false)
 
+  const sourceTextRef = useRef(sourceText)
+  const resultRef = useRef(result)
+  useEffect(() => { sourceTextRef.current = sourceText }, [sourceText])
+  useEffect(() => { resultRef.current = result }, [result])
+
   useWindowSync<{ from: string; sourceText: string; result: string }>(
     'translate-sync', winId,
     (payload) => { setSourceText(payload.sourceText); setResult(payload.result) },
@@ -120,7 +125,7 @@ export default function TranslateView() {
     let unlisten: UnlistenFn | null = null
     listen<string>('switch-sync', (e) => {
       if (e.payload === winId) {
-        emit('translate-sync', { from: winId, sourceText, result })
+        emit('translate-sync', { from: winId, sourceText: sourceTextRef.current, result: resultRef.current })
       } else {
         setSourceText(''); setResult(''); setErrorMsg('')
       }
