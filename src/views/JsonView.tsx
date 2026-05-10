@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useRef } from 'react'
 import { getCurrentWindow } from '@tauri-apps/api/window'
-import { listen } from '@tauri-apps/api/event'
+import { emit, listen } from '@tauri-apps/api/event'
 import type { UnlistenFn } from '@tauri-apps/api/event'
 import {
   Button,
@@ -22,7 +22,7 @@ import {
   HistoryRegular,
 } from '@fluentui/react-icons'
 import { saveInputHistory } from '../api/deepseek'
-import { useWindowSync } from '../hooks/useWindowSync'
+import { useWindowSync, setSyncCache } from '../hooks/useWindowSync'
 import InputHistoryDialog from '../components/InputHistoryDialog'
 import hljs from 'highlight.js/lib/core'
 import json from 'highlight.js/lib/languages/json'
@@ -75,19 +75,18 @@ export default function JsonView() {
   useEffect(() => { inputRef.current = input }, [input])
   useEffect(() => { outputRef.current = output }, [output])
 
-  const syncJson = useWindowSync<{ from: string; input: string; output: string }>(
+  useWindowSync<{ from: string; input: string; output: string }>(
     'json-sync', winId,
     (payload) => { setInput(payload.input); setOutput(payload.output) },
   )
-
-  const syncJsonRef = useRef(syncJson)
-  syncJsonRef.current = syncJson
 
   useEffect(() => {
     let unlisten: UnlistenFn | null = null
     listen<string>('switch-sync', (e) => {
       if (e.payload === winId) {
-        syncJsonRef.current({ input: inputRef.current, output: outputRef.current })
+        const payload = { from: winId, input: inputRef.current, output: outputRef.current }
+        setSyncCache('json-sync', payload)
+        emit('json-sync', payload)
       } else {
         setInput(''); setOutput(''); setErrorMsg('')
       }

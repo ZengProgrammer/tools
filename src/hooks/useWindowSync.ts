@@ -5,6 +5,10 @@ interface SyncPayload { from: string; [key: string]: unknown }
 
 const lastSyncCache = new Map<string, unknown>()
 
+export function setSyncCache(channel: string, payload: unknown) {
+  lastSyncCache.set(channel, payload)
+}
+
 export function useWindowSync<T extends SyncPayload>(
   channel: string,
   winId: string,

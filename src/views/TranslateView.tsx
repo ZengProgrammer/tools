@@ -23,7 +23,7 @@ import {
   HistoryRegular,
 } from '@fluentui/react-icons'
 import { translate, loadSettings, saveSetting } from '../api/deepseek'
-import { useWindowSync } from '../hooks/useWindowSync'
+import { useWindowSync, setSyncCache } from '../hooks/useWindowSync'
 import HistoryDialog from '../components/HistoryDialog'
 import PromptDialog from '../components/PromptDialog'
 
@@ -107,13 +107,10 @@ export default function TranslateView() {
   useEffect(() => { sourceTextRef.current = sourceText }, [sourceText])
   useEffect(() => { resultRef.current = result }, [result])
 
-  const syncTranslate = useWindowSync<{ from: string; sourceText: string; result: string }>(
+  useWindowSync<{ from: string; sourceText: string; result: string }>(
     'translate-sync', winId,
     (payload) => { setSourceText(payload.sourceText); setResult(payload.result) },
   )
-
-  const syncTranslateRef = useRef(syncTranslate)
-  syncTranslateRef.current = syncTranslate
 
   useWindowSync<{ from: string; apiKey: string; model: string; customModel: string; systemPrompt: string }>(
     'settings-sync', winId,
@@ -129,7 +126,9 @@ export default function TranslateView() {
     let unlisten: UnlistenFn | null = null
     listen<string>('switch-sync', (e) => {
       if (e.payload === winId) {
-        syncTranslateRef.current({ sourceText: sourceTextRef.current, result: resultRef.current })
+        const payload = { from: winId, sourceText: sourceTextRef.current, result: resultRef.current }
+        setSyncCache('translate-sync', payload)
+        emit('translate-sync', payload)
       } else {
         setSourceText(''); setResult(''); setErrorMsg('')
       }
