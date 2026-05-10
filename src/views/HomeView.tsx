@@ -9,12 +9,13 @@ const useStyles = makeStyles({
   },
   hero: {
     textAlign: 'center',
-    padding: '36px 0 44px',
+    padding: '48px 0 56px',
   },
   title: {
     fontSize: '30px',
     fontWeight: 800,
     letterSpacing: '4px',
+    lineHeight: '42px',
     margin: '0 0 8px',
     background: `linear-gradient(135deg, ${tokens.colorBrandForeground1}, ${tokens.colorBrandForeground2})`,
     WebkitBackgroundClip: 'text',

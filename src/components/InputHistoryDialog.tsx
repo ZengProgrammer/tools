@@ -197,14 +197,36 @@ export default function InputHistoryDialog({
     await fullReload()
   }
 
+  const [confirmOpen, setConfirmOpen] = useState(false)
+  const [pendingDelete, setPendingDelete] = useState<'selected' | 'all' | null>(null)
+
   async function deleteSelected() {
     if (selectedIds.size === 0) return
     try {
       await deleteInputHistory(tool, [...selectedIds])
-      setTotal(await getInputHistoryCount(tool))
+      const newTotal = await getInputHistoryCount(tool)
+      setTotal(newTotal)
+      const maxPage = Math.max(1, Math.ceil(newTotal / pageSize))
       setSelectedIds(new Set())
-      await loadPage()
+      if (page > maxPage) {
+        setPage(maxPage)
+      } else {
+        await loadPageWithTotal(newTotal)
+      }
     } catch {}
+  }
+
+  async function loadPageWithTotal(currentTotal: number) {
+    setLoading(true)
+    try {
+      const maxPage = Math.max(1, Math.ceil(currentTotal / pageSize))
+      const p = page > maxPage ? maxPage : page
+      if (p !== page) setPage(p)
+      setRecords(await getInputHistory(tool, (p - 1) * pageSize, pageSize, sortDesc))
+    } catch (e) {
+      dispatchToast(<Toast><ToastTitle>{'加载失败: ' + String(e)}</ToastTitle></Toast>, { intent: 'error' })
+    }
+    setLoading(false)
   }
 
   async function deleteAll() {
@@ -215,6 +237,13 @@ export default function InputHistoryDialog({
       setRecords([])
       setSelectedIds(new Set())
     } catch {}
+  }
+
+  function handleConfirmDelete() {
+    setConfirmOpen(false)
+    if (pendingDelete === 'selected') deleteSelected()
+    else if (pendingDelete === 'all') deleteAll()
+    setPendingDelete(null)
   }
 
   function useRecord(text: string) {
@@ -239,9 +268,10 @@ export default function InputHistoryDialog({
   }, [page, pageSize, sortDesc])
 
   return (
+    <>
     <Dialog open={open} onOpenChange={(_, data) => onOpenChange(data.open)}>
       <DialogSurface style={{ width: 'calc(100vw - 40px)', maxWidth: '1000px', height: 'calc(100vh - 80px)' }}>
-        <DialogBody style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+        <DialogBody style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
           <DialogTitle>输入历史</DialogTitle>
 
           <div className={styles.toolbar} style={{ flexShrink: 0 }}>
@@ -257,7 +287,7 @@ export default function InputHistoryDialog({
                   icon={<DeleteRegular />}
                   size="small"
                   appearance="primary"
-                  onClick={deleteSelected}
+                  onClick={() => { setPendingDelete('selected'); setConfirmOpen(true) }}
                 >
                   删除({selectedIds.size})
                 </Button>
@@ -280,7 +310,7 @@ export default function InputHistoryDialog({
               >
                 刷新
               </Button>
-              <Button size="small" appearance="subtle" onClick={deleteAll}>
+              <Button size="small" appearance="subtle" onClick={() => { setPendingDelete('all'); setConfirmOpen(true) }}>
                 清空全部
               </Button>
             </div>
@@ -370,5 +400,21 @@ export default function InputHistoryDialog({
         </DialogActions>
       </DialogSurface>
     </Dialog>
+
+    <Dialog open={confirmOpen} onOpenChange={(_, d) => setConfirmOpen(d.open)}>
+      <DialogSurface>
+        <DialogBody>
+          <DialogTitle>确认删除</DialogTitle>
+          {pendingDelete === 'selected'
+            ? `确定删除选中的 ${selectedIds.size} 条记录？`
+            : '确定删除所有历史记录？'}
+        </DialogBody>
+        <DialogActions>
+          <Button appearance="secondary" onClick={() => setConfirmOpen(false)}>取消</Button>
+          <Button appearance="primary" onClick={handleConfirmDelete}>确定</Button>
+        </DialogActions>
+      </DialogSurface>
+    </Dialog>
+    </>
   )
 }
