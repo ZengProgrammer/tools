@@ -1,0 +1,165 @@
+import { useState, useMemo, useEffect } from 'react'
+import { getCurrentWindow, LogicalSize } from '@tauri-apps/api/window'
+import { listen, type UnlistenFn } from '@tauri-apps/api/event'
+import { makeStyles, tokens } from '@fluentui/react-components'
+import { MicRegular, CodeRegular, DataAreaRegular, PinRegular } from '@fluentui/react-icons'
+import TranslateView from './TranslateView'
+import JsonView from './JsonView'
+import SqlView from './SqlView'
+
+const appWindow = getCurrentWindow()
+
+const tools = [
+  { name: '翻译', icon: MicRegular, key: 'translate', color: '#00f0ff' },
+  { name: 'JSON', icon: CodeRegular, key: 'json', color: '#00ff41' },
+  { name: 'SQL', icon: DataAreaRegular, key: 'sql', color: '#ff00ff' },
+] as const
+
+const useStyles = makeStyles({
+  win: {
+    width: '100vw',
+    height: '100vh',
+    display: 'flex',
+    flexDirection: 'column',
+    overflow: 'hidden',
+  },
+  titleBar: {
+    height: '32px',
+    minHeight: '32px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
+    fontSize: '12px',
+    color: tokens.colorNeutralForeground4,
+    cursor: 'grab',
+    borderBottom: `1px solid ${tokens.colorNeutralStroke1}`,
+    letterSpacing: '1px',
+    userSelect: 'none',
+  },
+  pinBtn: {
+    position: 'absolute',
+    right: '8px',
+    cursor: 'pointer',
+    color: tokens.colorNeutralForeground4,
+    transition: 'color 0.15s',
+  },
+  pinBtnActive: { color: tokens.colorBrandForeground1 },
+  tabBar: {
+    display: 'flex',
+    borderBottom: `1px solid ${tokens.colorNeutralStroke1}`,
+    flexShrink: 0,
+  },
+  tabBtn: {
+    flex: 1,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '6px',
+    padding: '9px 0',
+    fontSize: '13px',
+    cursor: 'pointer',
+    transition: 'all 0.15s',
+    borderBottom: '2px solid transparent',
+    userSelect: 'none',
+  },
+  content: {
+    flex: 1,
+    overflow: 'auto',
+    minHeight: 0,
+    padding: '10px',
+  },
+})
+
+export default function FloatingWindow() {
+  const styles = useStyles()
+  const [activeKey, setActiveKey] = useState('translate')
+  const [pinned, setPinned] = useState(true)
+  const [contentVisible, setContentVisible] = useState(true)
+
+  async function togglePin() {
+    const next = !pinned
+    setPinned(next)
+    await appWindow.setAlwaysOnTop(next)
+  }
+
+  async function toggleContent(tool: string) {
+    if (activeKey === tool) {
+      const next = !contentVisible
+      setContentVisible(next)
+      await appWindow.setSize(next ? new LogicalSize(600, 480) : new LogicalSize(600, 80))
+    } else {
+      setActiveKey(tool)
+      if (!contentVisible) {
+        setContentVisible(true)
+        await appWindow.setSize(new LogicalSize(600, 480))
+      }
+    }
+  }
+
+  const ActiveView = useMemo(() => {
+    switch (activeKey) {
+      case 'translate': return <TranslateView />
+      case 'json': return <JsonView />
+      case 'sql': return <SqlView />
+      default: return null
+    }
+  }, [activeKey])
+
+  useEffect(() => {
+    document.documentElement.style.background = 'transparent'
+    document.body.style.background = 'transparent'
+
+    ;(window as any).__floatNav = async (tool: string) => {
+      setActiveKey(tool)
+      if (!contentVisible) {
+        setContentVisible(true)
+        await appWindow.setSize(new LogicalSize(600, 480))
+      }
+    }
+
+    let unlisten: UnlistenFn | null = null
+    listen<string>('float-navigate', async () => {
+      // The event payload contains the tool name
+      // Already handled by the tray via __floatNav
+    }).then((fn) => { unlisten = fn })
+
+    return () => { unlisten?.() }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  return (
+    <div className={styles.win}>
+      <div className={styles.titleBar} onMouseDown={() => appWindow.startDragging()}>
+        <span>工具箱</span>
+        <span
+          className={`${styles.pinBtn} ${pinned ? styles.pinBtnActive : ''}`}
+          onMouseDown={(e) => e.stopPropagation()}
+          onClick={(e) => { e.stopPropagation(); togglePin() }}
+        >
+          <PinRegular fontSize={14} />
+        </span>
+      </div>
+
+      <div className={styles.tabBar}>
+        {tools.map((t) => (
+          <div
+            key={t.key}
+            className={styles.tabBtn}
+            style={{
+              color: activeKey === t.key ? t.color : tokens.colorNeutralForeground4,
+              borderBottomColor: activeKey === t.key ? t.color : 'transparent',
+              background: activeKey === t.key ? `${t.color}11` : 'transparent',
+            }}
+            onClick={() => toggleContent(t.key)}
+          >
+            <t.icon fontSize={16} />
+            <span>{t.name}</span>
+          </div>
+        ))}
+      </div>
+
+      {contentVisible && <div className={styles.content}>{ActiveView}</div>}
+    </div>
+  )
+}
