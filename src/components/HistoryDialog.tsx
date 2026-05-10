@@ -83,7 +83,7 @@ const useStyles = makeStyles({
   },
   textResult: { color: tokens.colorStatusSuccessForeground1 },
   arrow: { flexShrink: 0, color: tokens.colorBrandForeground1, fontWeight: 600, opacity: 0.6 },
-  copyBtn: { flexShrink: 0, opacity: 0, transition: 'opacity 0.15s' },
+  copyBtn: { flexShrink: 0, opacity: 0.5, transition: 'opacity 0.15s' },
   empty: { textAlign: 'center', color: tokens.colorNeutralForeground4, padding: '50px 0', fontSize: '14px' },
   pager: {
     display: 'flex',
@@ -242,7 +242,7 @@ export default function HistoryDialog({
 
   return (
     <Dialog open={open} onOpenChange={(_, data) => onOpenChange(data.open)}>
-      <DialogSurface>
+      <DialogSurface style={{ maxWidth: '90vw', maxHeight: '90vh' }}>
         <DialogBody>
           <DialogTitle>翻译历史</DialogTitle>
 

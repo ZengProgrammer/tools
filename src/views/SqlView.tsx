@@ -72,7 +72,7 @@ export default function SqlView() {
   const [errorMsg, setErrorMsg] = useState('')
   const [dialect, setDialect] = useState('sqlite')
   const [uppercase, setUppercase] = useState(false)
-  const [tabWidth, setTabWidth] = useState(2)
+  const [tabWidth, setTabWidth] = useState('2')
   const [showHistory, setShowHistory] = useState(false)
 
   useWindowSync<{ from: string; input: string; output: string }>(
@@ -100,12 +100,15 @@ export default function SqlView() {
 
   function doFormat() {
     setErrorMsg(''); setOutput('')
-    if (!input.trim()) { setErrorMsg('请输入 SQL 文本'); return }
+    if (!input.trim()) {
+      dispatchToast(<Toast><ToastTitle>请输入 SQL 文本</ToastTitle></Toast>, { intent: 'warning' })
+      return
+    }
     try {
       setOutput(format(input, {
         language: dialect as any,
         keywordCase: uppercase ? 'upper' : 'lower',
-        ...(tabWidth === 0 ? { useTabs: true } : { tabWidth }),
+        ...(tabWidth === 'tab' ? { useTabs: true } : { tabWidth: Number(tabWidth) }),
       }))
       saveInputHistory('sql', input)
       dispatchToast(<Toast><ToastTitle>格式化完成</ToastTitle></Toast>, { intent: 'success' })
@@ -114,7 +117,10 @@ export default function SqlView() {
 
   function doCompress() {
     setErrorMsg(''); setOutput('')
-    if (!input.trim()) { setErrorMsg('请输入 SQL 文本'); return }
+    if (!input.trim()) {
+      dispatchToast(<Toast><ToastTitle>请输入 SQL 文本</ToastTitle></Toast>, { intent: 'warning' })
+      return
+    }
     try {
       const formatted = format(input, { language: dialect as any })
       setOutput(formatted.replace(/\n\s*/g, ' ').trim())
@@ -142,10 +148,10 @@ export default function SqlView() {
           <Dropdown value={dialect} onOptionSelect={(_, d) => setDialect(d.optionValue!)} style={{ width: '130px' }}>
             {dialects.map((d) => <Option key={d.value} value={d.value}>{d.label}</Option>)}
           </Dropdown>
-          <Dropdown value={String(tabWidth)} onOptionSelect={(_, d) => setTabWidth(Number(d.optionValue))} style={{ width: '100px' }} size="small">
-            <Option value="2">2 空格</Option>
-            <Option value="4">4 空格</Option>
-            <Option value="0">Tab</Option>
+          <Dropdown value={tabWidth} onOptionSelect={(_, d) => setTabWidth(d.optionValue!)} style={{ width: '100px' }}>
+            <Option value="2" text="2 空格">2 空格</Option>
+            <Option value="4" text="4 空格">4 空格</Option>
+            <Option value="tab" text="Tab">Tab</Option>
           </Dropdown>
           <Checkbox checked={uppercase} onChange={(_, d) => setUppercase(d.checked === true)} label="关键字大写" />
         </div>

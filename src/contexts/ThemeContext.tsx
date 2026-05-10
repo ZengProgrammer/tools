@@ -32,7 +32,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   return (
     <ThemeContext.Provider value={{ isDark, toggleTheme }}>
-      <FluentProvider theme={isDark ? appDarkTheme : appLightTheme}>
+      <FluentProvider theme={isDark ? appDarkTheme : appLightTheme} style={{ height: '100%' }}>
         {children}
       </FluentProvider>
     </ThemeContext.Provider>

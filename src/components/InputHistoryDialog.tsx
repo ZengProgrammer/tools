@@ -99,7 +99,7 @@ const useStyles = makeStyles({
   pages: { display: 'flex', alignItems: 'center', gap: '2px' },
   pageInfo: { fontSize: '13px', color: tokens.colorNeutralForeground2, padding: '0 8px' },
   total: { fontSize: '12px', color: tokens.colorNeutralForeground4, marginLeft: 'auto' },
-  copyBtn: { opacity: 0, transition: 'opacity 0.15s' },
+  copyBtn: { opacity: 0.5, transition: 'opacity 0.15s' },
 })
 
 const pageSizes = [5, 10, 20]
@@ -242,7 +242,7 @@ export default function InputHistoryDialog({
 
   return (
     <Dialog open={open} onOpenChange={(_, data) => onOpenChange(data.open)}>
-      <DialogSurface>
+      <DialogSurface style={{ maxWidth: '90vw', maxHeight: '90vh' }}>
         <DialogBody>
           <DialogTitle>输入历史</DialogTitle>
 

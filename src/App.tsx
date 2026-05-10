@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { HashRouter, Routes, Route } from 'react-router-dom'
+import { Toaster } from '@fluentui/react-components'
 import { getCurrentWindow } from '@tauri-apps/api/window'
 import { ThemeProvider } from './contexts/ThemeContext'
 import AppLayout from './components/AppLayout'
@@ -28,6 +29,7 @@ export default function App() {
 
   return (
     <ThemeProvider>
+      <Toaster />
       <HashRouter>
         {mode === 'floating' ? (
           <FloatingWindow />

@@ -66,7 +66,7 @@ export default function JsonView() {
   const [input, setInput] = useState('')
   const [output, setOutput] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
-  const [indent, setIndent] = useState(2)
+  const [indent, setIndent] = useState('2')
   const [sortKeys, setSortKeys] = useState(false)
   const [showHistory, setShowHistory] = useState(false)
 
@@ -111,11 +111,14 @@ export default function JsonView() {
 
   function doFormat() {
     setErrorMsg(''); setOutput('')
-    if (!input.trim()) { setErrorMsg('请输入 JSON 文本'); return }
+    if (!input.trim()) {
+      dispatchToast(<Toast><ToastTitle>请输入 JSON 文本</ToastTitle></Toast>, { intent: 'warning' })
+      return
+    }
     try {
       let obj = JSON.parse(input)
       if (sortKeys) obj = sortObjectKeys(obj)
-      setOutput(JSON.stringify(obj, null, indent === 0 ? '\t' : indent))
+      setOutput(JSON.stringify(obj, null, indent === 'tab' ? '\t' : Number(indent)))
       saveInputHistory('json', input)
       dispatchToast(<Toast><ToastTitle>格式化完成</ToastTitle></Toast>, { intent: 'success' })
     } catch (e) { setErrorMsg(String(e)) }
@@ -123,7 +126,10 @@ export default function JsonView() {
 
   function doCompress() {
     setErrorMsg(''); setOutput('')
-    if (!input.trim()) { setErrorMsg('请输入 JSON 文本'); return }
+    if (!input.trim()) {
+      dispatchToast(<Toast><ToastTitle>请输入 JSON 文本</ToastTitle></Toast>, { intent: 'warning' })
+      return
+    }
     try {
       setOutput(JSON.stringify(JSON.parse(input)))
       saveInputHistory('json', input)
@@ -147,10 +153,10 @@ export default function JsonView() {
     <div className={styles.page}>
       <div className={styles.toolbar}>
         <div className={styles.toolbarLeft}>
-          <Dropdown value={String(indent)} onOptionSelect={(_, d) => setIndent(Number(d.optionValue))} style={{ width: '100px' }} size="small">
-            <Option value="2">2 空格</Option>
-            <Option value="4">4 空格</Option>
-            <Option value="0">Tab</Option>
+          <Dropdown value={indent} onOptionSelect={(_, d) => setIndent(d.optionValue!)} style={{ width: '100px' }}>
+            <Option value="2" text="2 空格">2 空格</Option>
+            <Option value="4" text="4 空格">4 空格</Option>
+            <Option value="tab" text="Tab">Tab</Option>
           </Dropdown>
           <Checkbox checked={sortKeys} onChange={(_, d) => setSortKeys(d.checked === true)} label="Key 排序" />
           {isValid === true && (
