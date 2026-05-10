@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { getCurrentWindow } from '@tauri-apps/api/window'
 import { emit, listen } from '@tauri-apps/api/event'
+// emit used for settings-sync
 import type { UnlistenFn } from '@tauri-apps/api/event'
 import {
   Button,
@@ -106,10 +107,13 @@ export default function TranslateView() {
   useEffect(() => { sourceTextRef.current = sourceText }, [sourceText])
   useEffect(() => { resultRef.current = result }, [result])
 
-  useWindowSync<{ from: string; sourceText: string; result: string }>(
+  const syncTranslate = useWindowSync<{ from: string; sourceText: string; result: string }>(
     'translate-sync', winId,
     (payload) => { setSourceText(payload.sourceText); setResult(payload.result) },
   )
+
+  const syncTranslateRef = useRef(syncTranslate)
+  syncTranslateRef.current = syncTranslate
 
   useWindowSync<{ from: string; apiKey: string; model: string; customModel: string; systemPrompt: string }>(
     'settings-sync', winId,
@@ -125,7 +129,7 @@ export default function TranslateView() {
     let unlisten: UnlistenFn | null = null
     listen<string>('switch-sync', (e) => {
       if (e.payload === winId) {
-        emit('translate-sync', { from: winId, sourceText: sourceTextRef.current, result: resultRef.current })
+        syncTranslateRef.current({ sourceText: sourceTextRef.current, result: resultRef.current })
       } else {
         setSourceText(''); setResult(''); setErrorMsg('')
       }
