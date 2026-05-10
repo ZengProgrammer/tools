@@ -1,8 +1,6 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { getCurrentWindow } from '@tauri-apps/api/window'
-import { emit, listen } from '@tauri-apps/api/event'
-// emit used for settings-sync
-import type { UnlistenFn } from '@tauri-apps/api/event'
+import { emit } from '@tauri-apps/api/event'
 import {
   Button,
   Dropdown,
@@ -23,7 +21,7 @@ import {
   HistoryRegular,
 } from '@fluentui/react-icons'
 import { translate, loadSettings, saveSetting } from '../api/deepseek'
-import { useWindowSync, setSyncCache } from '../hooks/useWindowSync'
+import { useWindowSync } from '../hooks/useWindowSync'
 import HistoryDialog from '../components/HistoryDialog'
 import PromptDialog from '../components/PromptDialog'
 
@@ -102,11 +100,6 @@ export default function TranslateView() {
   const [showPrompt, setShowPrompt] = useState(false)
   const [showHistory, setShowHistory] = useState(false)
 
-  const sourceTextRef = useRef(sourceText)
-  const resultRef = useRef(result)
-  useEffect(() => { sourceTextRef.current = sourceText }, [sourceText])
-  useEffect(() => { resultRef.current = result }, [result])
-
   useWindowSync<{ from: string; sourceText: string; result: string }>(
     'translate-sync', winId,
     (payload) => { setSourceText(payload.sourceText); setResult(payload.result) },
@@ -122,20 +115,6 @@ export default function TranslateView() {
     },
   )
 
-  useEffect(() => {
-    let unlisten: UnlistenFn | null = null
-    listen<string>('switch-sync', (e) => {
-      if (e.payload === winId) {
-        const payload = { from: winId, sourceText: sourceTextRef.current, result: resultRef.current }
-        setSyncCache('translate-sync', payload)
-        emit('translate-sync', payload)
-      } else {
-        setSourceText(''); setResult(''); setErrorMsg('')
-      }
-    }).then((fn) => { unlisten = fn })
-    return () => { unlisten?.() }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   useEffect(() => {
     loadSettings().then((s) => {

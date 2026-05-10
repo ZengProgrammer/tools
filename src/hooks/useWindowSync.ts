@@ -1,9 +1,13 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useCallback } from 'react'
 import { listen, emit, type UnlistenFn } from '@tauri-apps/api/event'
 
 interface SyncPayload { from: string; [key: string]: unknown }
 
 const lastSyncCache = new Map<string, unknown>()
+
+export function getSyncCache(channel: string) {
+  return lastSyncCache.get(channel)
+}
 
 export function setSyncCache(channel: string, payload: unknown) {
   lastSyncCache.set(channel, payload)
@@ -18,7 +22,6 @@ export function useWindowSync<T extends SyncPayload>(
   onReceiveRef.current = onReceive
 
   useEffect(() => {
-    // Replay cached sync if available (handles late mount after switch)
     const cached = lastSyncCache.get(channel) as T | undefined
     if (cached && cached.from !== winId) {
       onReceiveRef.current(cached)
@@ -34,11 +37,11 @@ export function useWindowSync<T extends SyncPayload>(
     return () => { unlisten?.() }
   }, [channel, winId])
 
-  const syncOut = (payload: Omit<T, 'from'>) => {
+  const syncOut = useCallback((payload: Omit<T, 'from'>) => {
     const full = { ...payload, from: winId } as T
     lastSyncCache.set(channel, full)
     emit(channel, full)
-  }
+  }, [channel, winId])
 
   return syncOut
 }

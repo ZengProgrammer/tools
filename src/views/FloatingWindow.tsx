@@ -1,13 +1,15 @@
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { getCurrentWindow, LogicalSize } from '@tauri-apps/api/window'
-import { listen, type UnlistenFn } from '@tauri-apps/api/event'
+import { emit, listen, type UnlistenFn } from '@tauri-apps/api/event'
 import { makeStyles, tokens } from '@fluentui/react-components'
 import { MicRegular, CodeRegular, DataAreaRegular, PinRegular } from '@fluentui/react-icons'
+import { getSyncCache, setSyncCache } from '../hooks/useWindowSync'
 import TranslateView from './TranslateView'
 import JsonView from './JsonView'
 import SqlView from './SqlView'
 
 const appWindow = getCurrentWindow()
+const winId = appWindow.label
 
 const tools = [
   { name: '翻译', icon: MicRegular, key: 'translate', color: '#00f0ff' },
@@ -97,15 +99,6 @@ export default function FloatingWindow() {
     }
   }
 
-  const ActiveView = useMemo(() => {
-    switch (activeKey) {
-      case 'translate': return <TranslateView />
-      case 'json': return <JsonView />
-      case 'sql': return <SqlView />
-      default: return null
-    }
-  }, [activeKey])
-
   useEffect(() => {
     document.documentElement.style.background = 'transparent'
     document.body.style.background = 'transparent'
@@ -118,16 +111,30 @@ export default function FloatingWindow() {
       }
     }
 
-    let unlisten: UnlistenFn | null = null
-    listen<string>('float-navigate', async () => {
-      // The event payload contains the tool name
-      // Already handled by the tray via __floatNav
-    }).then((fn) => { unlisten = fn })
+    // Handle switch-sync: broadcast all cached data from this window
+    let unlistenSwitch: UnlistenFn | null = null
+    listen<string>('switch-sync', (e) => {
+      if (e.payload === winId) {
+        // I'm the source — broadcast all tool data
+        for (const ch of ['translate-sync', 'json-sync', 'sql-sync']) {
+          const cached = getSyncCache(ch)
+          if (cached) {
+            const payload = { ...(cached as any), from: winId }
+            setSyncCache(ch, payload)
+            emit(ch, payload)
+          }
+        }
+      }
+    }).then((fn) => { unlistenSwitch = fn })
 
-    return () => { unlisten?.() }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    let unlistenFloat: UnlistenFn | null = null
+    listen<string>('float-navigate', async () => {}).then((fn) => { unlistenFloat = fn })
+
+    return () => { unlistenSwitch?.(); unlistenFloat?.() }
   }, [])
 
+  // All 3 views are ALWAYS rendered so their useWindowSync listeners stay active.
+  // CSS hides inactive ones.
   return (
     <div className={styles.win}>
       <div className={styles.titleBar} onMouseDown={() => appWindow.startDragging()}>
@@ -159,7 +166,19 @@ export default function FloatingWindow() {
         ))}
       </div>
 
-      {contentVisible && <div className={styles.content}>{ActiveView}</div>}
+      {contentVisible && (
+        <div className={styles.content}>
+          <div style={{ display: activeKey === 'translate' ? 'block' : 'none', height: '100%' }}>
+            <TranslateView />
+          </div>
+          <div style={{ display: activeKey === 'json' ? 'block' : 'none', height: '100%' }}>
+            <JsonView />
+          </div>
+          <div style={{ display: activeKey === 'sql' ? 'block' : 'none', height: '100%' }}>
+            <SqlView />
+          </div>
+        </div>
+      )}
     </div>
   )
 }
