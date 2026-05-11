@@ -108,86 +108,87 @@ export default function FloatingWindow() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  if (!contentVisible) {
-    return (
-      <div className={styles.pet}
-        onPointerDown={(e) => {
-          dragRef.current = { x: e.clientX, y: e.clientY, dragging: false }
-          e.currentTarget.setPointerCapture(e.pointerId)
-        }}
-        onPointerMove={(e) => {
-          if (dragRef.current.dragging) return
-          if (Math.abs(e.clientX - dragRef.current.x) > 4 || Math.abs(e.clientY - dragRef.current.y) > 4) {
-            dragRef.current.dragging = true
-            appWindow.startDragging()
-          }
-        }}
-        onPointerUp={() => {
-          if (!dragRef.current.dragging) {
-            toggleContent(activeKey)
-          }
-        }}>
-        <div className={styles.petIcon}>
-          {(() => {
-            const Icon = tools.find(t => t.key === activeKey)?.icon ?? tools[0].icon
-            return <Icon fontSize={28} />
-          })()}
-        </div>
-        <div
-          className={styles.petPin}
-          onMouseDown={(e) => e.stopPropagation()}
-          onClick={(e) => { e.stopPropagation(); togglePin() }}
-          title={pinned ? '取消置顶' : '置顶'}
-        >
-          <PinRegular fontSize={10} color={pinned ? tokens.colorBrandForeground1 : tokens.colorNeutralForeground4} />
-        </div>
-      </div>
-    )
-  }
-
-  // Keep all views mounted (like Vue's <KeepAlive>) so event listeners stay active
   return (
     <div className={styles.win}>
-      <div className={styles.titleBar} onMouseDown={() => appWindow.startDragging()}>
-        <span>工具箱</span>
-        <span
-          className={`${styles.pinBtn} ${pinned ? styles.pinBtnActive : ''}`}
-          onMouseDown={(e) => e.stopPropagation()}
-          onClick={(e) => { e.stopPropagation(); togglePin() }}
-        >
-          <PinRegular fontSize={14} />
-        </span>
-      </div>
-
-      <div className={styles.tabBar}>
-        {tools.map((t) => (
-          <div
-            key={t.key}
-            className={styles.tabBtn}
-            style={{
-              color: activeKey === t.key ? t.color : tokens.colorNeutralForeground4,
-              borderBottomColor: activeKey === t.key ? t.color : 'transparent',
-              background: activeKey === t.key ? `${t.color}11` : 'transparent',
-            }}
-            onClick={() => toggleContent(t.key)}
+      {/* Full view (always mounted to preserve state) */}
+      <div style={{ display: contentVisible ? 'flex' : 'none', flexDirection: 'column', height: '100%' }}>
+        <div className={styles.titleBar} onMouseDown={() => appWindow.startDragging()}>
+          <span>工具箱</span>
+          <span
+            className={`${styles.pinBtn} ${pinned ? styles.pinBtnActive : ''}`}
+            onMouseDown={(e) => e.stopPropagation()}
+            onClick={(e) => { e.stopPropagation(); togglePin() }}
           >
-            <t.icon fontSize={16} />
-            <span>{t.name}</span>
+            <PinRegular fontSize={14} />
+          </span>
+        </div>
+
+        <div className={styles.tabBar}>
+          {tools.map((t) => (
+            <div
+              key={t.key}
+              className={styles.tabBtn}
+              style={{
+                color: activeKey === t.key ? t.color : tokens.colorNeutralForeground4,
+                borderBottomColor: activeKey === t.key ? t.color : 'transparent',
+                background: activeKey === t.key ? `${t.color}11` : 'transparent',
+              }}
+              onClick={() => toggleContent(t.key)}
+            >
+              <t.icon fontSize={16} />
+              <span>{t.name}</span>
+            </div>
+          ))}
+        </div>
+
+        <div className={styles.content}>
+          <div style={{ display: activeKey === 'translate' ? 'block' : 'none', height: '100%' }}>
+            <TranslateView />
           </div>
-        ))}
+          <div style={{ display: activeKey === 'json' ? 'block' : 'none', height: '100%' }}>
+            <JsonView />
+          </div>
+          <div style={{ display: activeKey === 'sql' ? 'block' : 'none', height: '100%' }}>
+            <SqlView />
+          </div>
+        </div>
       </div>
 
-      <div className={styles.content}>
-        <div style={{ display: activeKey === 'translate' ? 'block' : 'none', height: '100%' }}>
-          <TranslateView />
+      {/* Pet overlay */}
+      {!contentVisible && (
+        <div className={styles.pet} style={{ position: 'absolute', inset: 0 }}
+          onPointerDown={(e) => {
+            dragRef.current = { x: e.clientX, y: e.clientY, dragging: false }
+            e.currentTarget.setPointerCapture(e.pointerId)
+          }}
+          onPointerMove={(e) => {
+            if (dragRef.current.dragging) return
+            if (Math.abs(e.clientX - dragRef.current.x) > 4 || Math.abs(e.clientY - dragRef.current.y) > 4) {
+              dragRef.current.dragging = true
+              appWindow.startDragging()
+            }
+          }}
+          onPointerUp={() => {
+            if (!dragRef.current.dragging) {
+              toggleContent(activeKey)
+            }
+          }}>
+          <div className={styles.petIcon}>
+            {(() => {
+              const Icon = tools.find(t => t.key === activeKey)?.icon ?? tools[0].icon
+              return <Icon fontSize={28} />
+            })()}
+          </div>
+          <div
+            className={styles.petPin}
+            onMouseDown={(e) => e.stopPropagation()}
+            onClick={(e) => { e.stopPropagation(); togglePin() }}
+            title={pinned ? '取消置顶' : '置顶'}
+          >
+            <PinRegular fontSize={10} color={pinned ? tokens.colorBrandForeground1 : tokens.colorNeutralForeground4} />
+          </div>
         </div>
-        <div style={{ display: activeKey === 'json' ? 'block' : 'none', height: '100%' }}>
-          <JsonView />
-        </div>
-        <div style={{ display: activeKey === 'sql' ? 'block' : 'none', height: '100%' }}>
-          <SqlView />
-        </div>
-      </div>
+      )}
     </div>
   )
 }
