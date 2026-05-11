@@ -14,7 +14,6 @@ const useStyles = makeStyles({
   hint: {
     fontSize: '12px',
     color: tokens.colorNeutralForeground4,
-    marginTop: '8px',
   },
   code: {
     background: tokens.colorNeutralBackground4,
@@ -51,12 +50,12 @@ export default function PromptDialog({
             rows={4}
             placeholder="自定义翻译提示词..."
           />
+        </DialogBody>
+        <DialogActions style={{ justifyContent: 'space-between' }}>
           <div className={styles.hint}>
             <code className={styles.code}>{'{source}'}</code> 源语言,{' '}
             <code className={styles.code}>{'{target}'}</code> 目标语言
           </div>
-        </DialogBody>
-        <DialogActions>
           <Button appearance="primary" onClick={() => onOpenChange(false)}>
             确认
           </Button>
