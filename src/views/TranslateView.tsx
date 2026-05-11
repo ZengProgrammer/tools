@@ -48,13 +48,13 @@ const modelOptions = [
 const useStyles = makeStyles({
   page: { height: '100%', display: 'flex', flexDirection: 'column', gap: '12px', overflow: 'hidden' },
   controlRow: {
-    display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'nowrap', overflow: 'hidden',
-    padding: '10px 12px',
+    display: 'flex', alignItems: 'center', flexWrap: 'nowrap', overflow: 'hidden',
+    padding: '8px 10px',
     border: `1px solid ${tokens.colorNeutralStroke1}`, borderRadius: '8px',
   },
-  langGroup: { display: 'flex', alignItems: 'center', gap: '3px', flex: 1, minWidth: 0 },
+  langGroup: { display: 'flex', alignItems: 'center', gap: '2px', flexShrink: 1, minWidth: 0 },
   label: { fontSize: '12px', color: tokens.colorNeutralForeground3, whiteSpace: 'nowrap' },
-  actionGroup: { display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0 },
+  actionGroup: { display: 'flex', alignItems: 'center', gap: '3px', flexShrink: 0, marginLeft: '6px' },
   settingsPanel: { marginTop: '8px' },
   settingGrid: { display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap', marginTop: '8px' },
   textRow: {
