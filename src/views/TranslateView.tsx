@@ -31,13 +31,13 @@ const DEFAULT_PROMPT = '你是一名专业翻译。将以下文本从{source}翻
 
 const languages = [
   { label: '自动检测', value: 'auto' },
-  { label: '中文', value: 'Chinese' },
-  { label: 'English', value: 'English' },
-  { label: '한국어', value: 'Korean' },
-  { label: '日本語', value: 'Japanese' },
-  { label: 'Deutsch', value: 'German' },
-  { label: 'Français', value: 'French' },
-  { label: 'العربية', value: 'Arabic' },
+  { label: '中文 (Chinese)', value: 'Chinese' },
+  { label: 'English (英语)', value: 'English' },
+  { label: '한국어 (韩语)', value: 'Korean' },
+  { label: '日本語 (日语)', value: 'Japanese' },
+  { label: 'Deutsch (德语)', value: 'German' },
+  { label: 'Français (法语)', value: 'French' },
+  { label: 'العربية (阿拉伯语)', value: 'Arabic' },
 ]
 
 const modelOptions = [
