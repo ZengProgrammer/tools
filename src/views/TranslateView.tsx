@@ -49,12 +49,12 @@ const useStyles = makeStyles({
   page: { height: '100%', display: 'flex', flexDirection: 'column', gap: '12px', overflow: 'hidden' },
   controlRow: {
     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-    gap: '16px', flexWrap: 'wrap', padding: '16px 18px',
+    gap: '8px', padding: '12px 14px',
     border: `1px solid ${tokens.colorNeutralStroke1}`, borderRadius: '8px',
   },
-  langGroup: { display: 'flex', alignItems: 'center', gap: '8px' },
-  label: { fontSize: '13px', color: tokens.colorNeutralForeground3, whiteSpace: 'nowrap' },
-  actionGroup: { display: 'flex', alignItems: 'center', gap: '8px' },
+  langGroup: { display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0 },
+  label: { fontSize: '12px', color: tokens.colorNeutralForeground3, whiteSpace: 'nowrap' },
+  actionGroup: { display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0, whiteSpace: 'nowrap' },
   settingsPanel: { marginTop: '8px' },
   settingGrid: { display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap', marginTop: '8px' },
   textRow: {
@@ -224,12 +224,12 @@ export default function TranslateView() {
       <div className={styles.controlRow}>
         <div className={styles.langGroup}>
           <span className={styles.label}>源语言</span>
-          <Dropdown value={sourceLang} onOptionSelect={(_, d) => setSourceLang(d.optionValue!)} style={{ width: '130px' }}>
+          <Dropdown value={sourceLang} onOptionSelect={(_, d) => setSourceLang(d.optionValue!)} style={{ width: '110px' }}>
             {languages.map((l) => <Option key={l.value} value={l.value}>{l.label}</Option>)}
           </Dropdown>
           <Button icon={<ArrowSortRegular />} size="small" disabled={sourceLang === 'auto'} onClick={swapLanguages} />
           <span className={styles.label}>目标语言</span>
-          <Dropdown value={targetLang} onOptionSelect={(_, d) => setTargetLang(d.optionValue!)} style={{ width: '130px' }}>
+          <Dropdown value={targetLang} onOptionSelect={(_, d) => setTargetLang(d.optionValue!)} style={{ width: '110px' }}>
             {languages.filter((x) => x.value !== 'auto').map((l) => <Option key={l.value} value={l.value}>{l.label}</Option>)}
           </Dropdown>
         </div>
