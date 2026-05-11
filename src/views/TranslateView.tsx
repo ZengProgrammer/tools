@@ -228,12 +228,12 @@ export default function TranslateView() {
         <div className={styles.langGroup}>
           {!isCompact && <span className={styles.label}>源语言</span>}
           <Dropdown value={sourceLang} onOptionSelect={(_, d) => setSourceLang(d.optionValue!)} style={{ width: isCompact ? '70px' : '110px' }}>
-            {languages.map((l) => <Option key={l.value} value={l.value}>{l.label}</Option>)}
+            {languages.map((l) => <Option key={l.value} value={l.value} text={l.label}>{l.label}</Option>)}
           </Dropdown>
           <Button icon={<ArrowSortRegular />} size="small" disabled={sourceLang === 'auto'} onClick={swapLanguages} />
           {!isCompact && <span className={styles.label}>目标语言</span>}
           <Dropdown value={targetLang} onOptionSelect={(_, d) => setTargetLang(d.optionValue!)} style={{ width: isCompact ? '70px' : '110px' }}>
-            {languages.filter((x) => x.value !== 'auto').map((l) => <Option key={l.value} value={l.value}>{l.label}</Option>)}
+            {languages.filter((x) => x.value !== 'auto').map((l) => <Option key={l.value} value={l.value} text={l.label}>{l.label}</Option>)}
           </Dropdown>
         </div>
         <div className={styles.actionGroup}>
