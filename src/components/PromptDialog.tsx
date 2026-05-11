@@ -52,13 +52,13 @@ export default function PromptDialog({
             placeholder="自定义翻译提示词..."
           />
           <div className={styles.hint}>
-            占位符 <code className={styles.code}>{'{source}'}</code> 源语言,{' '}
+            <code className={styles.code}>{'{source}'}</code> 源语言,{' '}
             <code className={styles.code}>{'{target}'}</code> 目标语言
           </div>
         </DialogBody>
         <DialogActions>
           <Button appearance="primary" onClick={() => onOpenChange(false)}>
-            确定
+            确认
           </Button>
         </DialogActions>
       </DialogSurface>
