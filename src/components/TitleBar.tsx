@@ -3,7 +3,8 @@ import { getCurrentWindow } from '@tauri-apps/api/window'
 import { makeStyles, tokens, Tooltip } from '@fluentui/react-components'
 import {
   SubtractRegular,
-  SquareRegular,
+  ArrowMaximizeRegular,
+  ArrowMinimizeRegular,
   DismissRegular,
   PinRegular,
   PinOffRegular,
@@ -94,7 +95,7 @@ export default function TitleBar() {
           onMouseEnter={() => setHovered('max')}
           onMouseLeave={() => setHovered(null)}
         >
-          <SquareRegular fontSize={12} />
+          {maximized ? <ArrowMinimizeRegular fontSize={14} /> : <ArrowMaximizeRegular fontSize={14} />}
         </button>
         <button
           className={`${styles.btn} ${hovered === 'close' ? styles.closeHover : ''}`}
