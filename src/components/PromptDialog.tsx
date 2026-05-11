@@ -62,24 +62,30 @@ export default function PromptDialog({
 
   function loadTemplates() {
     getPromptTemplates().then(async (list) => {
+      let targetId: number | null = null
+      let targetContent = ''
       if (list.length === 0) {
         await savePromptTemplate(DEFAULT_PROMPT_DESC, DEFAULT_PROMPT_CONTENT)
         const updated = await getPromptTemplates()
         setTemplates(updated)
-        setSelectedId(updated[0]?.id ?? null)
+        targetId = updated[0]?.id ?? null
+        targetContent = updated[0]?.content ?? ''
+        setSelectedId(targetId)
+        setEditContent(targetContent)
       } else {
         setTemplates(list)
         const def = list.find((t) => t.is_default)
-        setSelectedId(def ? def.id : list[0].id)
+        const t = def ?? list[0]
+        targetId = t.id
+        targetContent = t.content
+        setSelectedId(targetId)
+        setEditContent(targetContent)
       }
     }).catch(() => {})
   }
 
   useEffect(() => {
-    if (open) {
-      loadTemplates()
-      setEditContent('')
-    }
+    if (open) loadTemplates()
   }, [open])
 
   const selectedTemplate = templates.find((t) => t.id === selectedId)
