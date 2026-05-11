@@ -189,6 +189,7 @@ export default function PromptDialog({
             <span style={{ flexShrink: 0 }}>新建模板</span>
             <Input value={newDesc} onChange={(_, d) => setNewDesc(d.value)} placeholder="模板描述（必填）" style={{ flex: 1 }} />
           </DialogTitle>
+          <div style={{ height: '12px' }} />
           <div style={{ width: '100%' }}>
             <Textarea value={newContent} onChange={(_, d) => setNewContent(d.value)} placeholder="提示词内容（必填）" rows={6} style={{ width: '100%', resize: 'vertical' }} />
           </div>
