@@ -157,13 +157,15 @@ export default function PromptDialog({
             <Divider />
 
             {/* Prompt editor */}
-            <Textarea
-              value={selectedTemplate?.content ?? ''}
-              onChange={(_, data) => { if (selectedTemplate) onSystemPromptChange(data.value) }}
-              rows={8}
-              placeholder="选择模板以编辑提示词..."
-              style={{ width: '100%', resize: 'vertical' }}
-            />
+            <div style={{ width: '100%' }}>
+              <Textarea
+                value={selectedTemplate?.content ?? ''}
+                onChange={(_, data) => { if (selectedTemplate) onSystemPromptChange(data.value) }}
+                rows={8}
+                placeholder="选择模板以编辑提示词..."
+                style={{ width: '100%', resize: 'vertical' }}
+              />
+            </div>
 
             {/* Placeholder hint */}
             <div className={styles.hint} style={{ textAlign: 'right' }}>
@@ -187,7 +189,9 @@ export default function PromptDialog({
             <span style={{ flexShrink: 0 }}>新建模板</span>
             <Input value={newDesc} onChange={(_, d) => setNewDesc(d.value)} placeholder="模板描述（必填）" style={{ flex: 1 }} />
           </DialogTitle>
-          <Textarea value={newContent} onChange={(_, d) => setNewContent(d.value)} placeholder="提示词内容（必填）" rows={6} style={{ width: '100%', resize: 'vertical' }} />
+          <div style={{ width: '100%' }}>
+            <Textarea value={newContent} onChange={(_, d) => setNewContent(d.value)} placeholder="提示词内容（必填）" rows={6} style={{ width: '100%', resize: 'vertical' }} />
+          </div>
         </DialogBody>
         <DialogActions>
           <Button appearance="secondary" onClick={() => { setShowNew(false); setNewDesc(''); setNewContent('') }}>取消</Button>
