@@ -221,7 +221,7 @@ export default function TranslateView() {
 
   return (
     <div className={styles.page}>
-      <div className={styles.controlRow}>
+      <div className={styles.controlRow} style={{ flexWrap: 'nowrap', whiteSpace: 'nowrap' }}>
         <div className={styles.langGroup}>
           <Dropdown value={sourceLang} onOptionSelect={(_, d) => setSourceLang(d.optionValue!)} style={{ width: '50px' }}>
             {languages.map((l) => <Option key={l.value} value={l.value}>{l.label}</Option>)}

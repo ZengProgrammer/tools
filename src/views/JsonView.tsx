@@ -165,7 +165,7 @@ export default function JsonView() {
 
   return (
     <div className={styles.page}>
-      <div className={styles.toolbar}>
+      <div className={styles.toolbar} style={{ flexWrap: 'nowrap', whiteSpace: 'nowrap' }}>
         <div className={styles.toolbarLeft}>
           <Dropdown value={indent} onOptionSelect={(_, d) => setIndent(d.optionValue!)} style={{ width: '100px' }}>
             <Option value="2" text="2 空格">2 空格</Option>

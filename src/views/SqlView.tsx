@@ -157,7 +157,7 @@ export default function SqlView() {
 
   return (
     <div className={styles.page}>
-      <div className={styles.toolbar}>
+      <div className={styles.toolbar} style={{ flexWrap: 'nowrap', whiteSpace: 'nowrap' }}>
         <div className={styles.toolbarLeft}>
           <Dropdown value={dialect} onOptionSelect={(_, d) => setDialect(d.optionValue!)} style={{ width: '55px' }}>
             {dialects.map((d) => <Option key={d.value} value={d.value}>{d.label}</Option>)}
