@@ -393,7 +393,7 @@ export default function InputHistoryDialog({
             <span className={styles.total}>共 {total} 条</span>
           </div>
 
-          <DialogActions style={{ flexShrink: 0 }}>
+          <DialogActions style={{ flexShrink: 0, justifyContent: 'flex-end' }}>
             <Button appearance="primary" onClick={() => onOpenChange(false)}>
               关闭
             </Button>
