@@ -70,12 +70,12 @@ export default function FloatingWindow() {
 
   async function toggleContent(tool: string) {
     if (activeKey === tool) {
-      const next = !contentVisible
+      const next = !contentVisibleRef.current
       setContentVisible(next)
       await appWindow.setSize(next ? new LogicalSize(780, 480) : new LogicalSize(72, 72))
     } else {
       setActiveKey(tool)
-      if (!contentVisible) {
+      if (!contentVisibleRef.current) {
         setContentVisible(true)
         await appWindow.setSize(new LogicalSize(780, 480))
       }
