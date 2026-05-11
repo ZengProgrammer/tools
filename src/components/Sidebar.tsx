@@ -22,33 +22,6 @@ const useStyles = makeStyles({
     backgroundColor: tokens.colorNeutralBackground3,
     borderRight: `1px solid ${tokens.colorNeutralStroke1}`,
   },
-  brand: {
-    height: '60px',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '10px',
-    padding: '0 20px',
-    borderBottom: `1px solid ${tokens.colorNeutralStroke1}`,
-  },
-  brandIcon: {
-    width: '34px',
-    height: '34px',
-    borderRadius: '8px',
-    background: `linear-gradient(135deg, ${tokens.colorBrandBackground}, ${tokens.colorBrandBackgroundHover})`,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: tokens.colorNeutralForegroundInverted,
-  },
-  brandText: {
-    fontSize: '17px',
-    fontWeight: 700,
-    letterSpacing: '2px',
-    color: tokens.colorBrandForeground1,
-  },
-  pinBtn: {
-    marginLeft: 'auto',
-  },
   nav: {
     flex: 1,
     padding: '8px 0',
@@ -102,23 +75,8 @@ export default function Sidebar() {
 
   return (
     <aside className={styles.aside}>
-      <div className={styles.brand}>
-        <div className={styles.brandIcon}>
-          <CodeRegular fontSize={20} />
-        </div>
-        <span className={styles.brandText}>工具箱</span>
-        <Tooltip content={pinned ? '取消置顶' : '固定窗口'} relationship="label">
-          <Button
-            className={styles.pinBtn}
-            appearance="subtle"
-            icon={pinned ? <PinOffRegular /> : <PinRegular />}
-            size="small"
-            onClick={togglePin}
-          />
-        </Tooltip>
-      </div>
 
-      <nav className={styles.nav}>
+      <nav className={styles.nav} style={{ paddingTop: '16px' }}>
         {navItems.map((item) => {
           const active = item.path === '/'
             ? location.pathname === '/'
@@ -143,9 +101,16 @@ export default function Sidebar() {
           icon={isDark ? <WeatherSunnyRegular /> : <WeatherMoonRegular />}
           size="small"
           onClick={toggleTheme}
-        >
-          {isDark ? '浅色' : '深色'}
-        </Button>
+          title={isDark ? '切换浅色' : '切换深色'}
+        />
+        <Tooltip content={pinned ? '取消置顶' : '固定窗口'} relationship="label">
+          <Button
+            appearance="subtle"
+            icon={pinned ? <PinOffRegular /> : <PinRegular />}
+            size="small"
+            onClick={togglePin}
+          />
+        </Tooltip>
         <span className={styles.version}>v0.2.0</span>
       </div>
     </aside>

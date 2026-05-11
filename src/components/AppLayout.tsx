@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { listen, type UnlistenFn } from '@tauri-apps/api/event'
 import { makeStyles } from '@fluentui/react-components'
+import TitleBar from './TitleBar'
 import Sidebar from './Sidebar'
 import HomeView from '../views/HomeView'
 import TranslateView from '../views/TranslateView'
@@ -9,9 +10,15 @@ import JsonView from '../views/JsonView'
 import SqlView from '../views/SqlView'
 
 const useStyles = makeStyles({
-  layout: {
+  container: {
     height: '100%',
     display: 'flex',
+    flexDirection: 'column',
+  },
+  body: {
+    flex: 1,
+    display: 'flex',
+    minHeight: 0,
   },
   main: {
     flex: 1,
@@ -33,26 +40,28 @@ export default function AppLayout() {
     return () => { unlisten?.() }
   }, [navigate])
 
-  // Keep all views mounted (like FloatingWindow's display:none) so state persists across navigation
   const path = location.pathname === '/' ? '/' : '/' + location.pathname.split('/')[1]
 
   return (
-    <div className={styles.layout}>
-      <Sidebar />
-      <main className={styles.main}>
-        <div style={{ display: path === '/' ? 'block' : 'none', height: '100%' }}>
-          <HomeView />
-        </div>
-        <div style={{ display: path === '/translate' ? 'block' : 'none', height: '100%' }}>
-          <TranslateView />
-        </div>
-        <div style={{ display: path === '/json' ? 'block' : 'none', height: '100%' }}>
-          <JsonView />
-        </div>
-        <div style={{ display: path === '/sql' ? 'block' : 'none', height: '100%' }}>
-          <SqlView />
-        </div>
-      </main>
+    <div className={styles.container}>
+      <TitleBar />
+      <div className={styles.body}>
+        <Sidebar />
+        <main className={styles.main}>
+          <div style={{ display: path === '/' ? 'block' : 'none', height: '100%' }}>
+            <HomeView />
+          </div>
+          <div style={{ display: path === '/translate' ? 'block' : 'none', height: '100%' }}>
+            <TranslateView />
+          </div>
+          <div style={{ display: path === '/json' ? 'block' : 'none', height: '100%' }}>
+            <JsonView />
+          </div>
+          <div style={{ display: path === '/sql' ? 'block' : 'none', height: '100%' }}>
+            <SqlView />
+          </div>
+        </main>
+      </div>
     </div>
   )
 }
