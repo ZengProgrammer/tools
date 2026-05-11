@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { getCurrentWindow } from '@tauri-apps/api/window'
-import { emit } from '@tauri-apps/api/event'
+import { emit, listen, type UnlistenFn } from '@tauri-apps/api/event'
 import {
   Button,
   Dropdown,
@@ -21,7 +21,6 @@ import {
   HistoryRegular,
 } from '@fluentui/react-icons'
 import { translate, loadSettings, saveSetting } from '../api/deepseek'
-import { useWindowSync, setSyncCache } from '../hooks/useWindowSync'
 import HistoryDialog from '../components/HistoryDialog'
 import PromptDialog from '../components/PromptDialog'
 
@@ -100,35 +99,64 @@ export default function TranslateView() {
   const [showPrompt, setShowPrompt] = useState(false)
   const [showHistory, setShowHistory] = useState(false)
 
-  useWindowSync<{ from: string; sourceText: string; result: string }>(
-    'translate-sync', winId,
-    (payload) => { setSourceText(payload.sourceText); setResult(payload.result) },
-  )
+  // Refs for latest values (same as Vue refs)
+  const sourceTextRef = useRef(sourceText)
+  const resultRef = useRef(result)
+  sourceTextRef.current = sourceText
+  resultRef.current = result
 
-  useWindowSync<{ from: string; apiKey: string; model: string; customModel: string; systemPrompt: string }>(
-    'settings-sync', winId,
-    (payload) => {
-      setApiKey(payload.apiKey)
-      setModel(payload.model)
-      setCustomModel(payload.customModel)
-      if (payload.systemPrompt) setSystemPrompt(payload.systemPrompt)
-    },
-  )
-
-  // Keep sync cache updated with latest local state
-  useEffect(() => {
-    setSyncCache('translate-sync', { from: winId, sourceText, result })
-  }, [sourceText, result])
+  // syncOut: emit current state (exactly like Vue)
+  function syncOut() {
+    emit('translate-sync', { from: winId, sourceText: sourceTextRef.current, result: resultRef.current })
+  }
 
   useEffect(() => {
-    loadSettings().then((s) => {
-      if (s.api_key) setApiKey(s.api_key)
-      if (s.model) setModel(s.model)
-      if (s.custom_model) setCustomModel(s.custom_model)
-      if (s.system_prompt) setSystemPrompt(s.system_prompt)
-    }).catch((e) => {
-      dispatchToast(<Toast><ToastTitle>{'加载设置失败: ' + String(e)}</ToastTitle></Toast>, { intent: 'error' })
-    })
+    let unlistenSync: UnlistenFn | null = null
+    let unlistenSwitch: UnlistenFn | null = null
+
+    async function setup() {
+      try {
+        const settings = await loadSettings()
+        if (settings.api_key) setApiKey(settings.api_key)
+        if (settings.model) setModel(settings.model)
+        if (settings.custom_model) setCustomModel(settings.custom_model)
+        if (settings.system_prompt) setSystemPrompt(settings.system_prompt)
+      } catch (e) {
+        dispatchToast(<Toast><ToastTitle>{'加载设置失败: ' + String(e)}</ToastTitle></Toast>, { intent: 'error' })
+      }
+
+      // Listen for sync from other window
+      unlistenSync = await listen<{ from: string; sourceText: string; result: string }>('translate-sync', (e) => {
+        if (e.payload.from === winId) return
+        setSourceText(e.payload.sourceText)
+        setResult(e.payload.result)
+      })
+
+      // Listen for settings sync
+      const unlistenSettings = await listen<{ from: string; apiKey: string; model: string; customModel: string; systemPrompt: string }>('settings-sync', (s) => {
+        if (s.payload.from === winId) return
+        setApiKey(s.payload.apiKey)
+        setModel(s.payload.model)
+        setCustomModel(s.payload.customModel)
+        if (s.payload.systemPrompt) setSystemPrompt(s.payload.systemPrompt)
+      })
+
+      // When tray switches: source broadcasts, target clears
+      unlistenSwitch = await listen<string>('switch-sync', (e) => {
+        if (e.payload === winId) {
+          syncOut()
+        } else {
+          setSourceText('')
+          setResult('')
+          setErrorMsg('')
+        }
+      })
+
+      return () => { unlistenSettings() }
+    }
+
+    const cleanup = setup()
+    return () => { cleanup.then(fn => fn?.()); unlistenSync?.(); unlistenSwitch?.() }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

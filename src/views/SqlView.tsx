@@ -1,5 +1,6 @@
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import { getCurrentWindow } from '@tauri-apps/api/window'
+import { emit, listen, type UnlistenFn } from '@tauri-apps/api/event'
 import {
   Button,
   Dropdown,
@@ -18,7 +19,6 @@ import {
   HistoryRegular,
 } from '@fluentui/react-icons'
 import { saveInputHistory } from '../api/deepseek'
-import { useWindowSync, setSyncCache } from '../hooks/useWindowSync'
 import InputHistoryDialog from '../components/InputHistoryDialog'
 import { format } from 'sql-formatter'
 import hljs from 'highlight.js/lib/core'
@@ -73,14 +73,39 @@ export default function SqlView() {
   const [tabWidth, setTabWidth] = useState('2')
   const [showHistory, setShowHistory] = useState(false)
 
-  useWindowSync<{ from: string; input: string; output: string }>(
-    'sql-sync', winId,
-    (payload) => { setInput(payload.input); setOutput(payload.output) },
-  )
+  const inputRef = useRef(input)
+  const outputRef = useRef(output)
+  inputRef.current = input
+  outputRef.current = output
+
+  function syncOut() {
+    emit('sql-sync', { from: winId, input: inputRef.current, output: outputRef.current })
+  }
 
   useEffect(() => {
-    setSyncCache('sql-sync', { from: winId, input, output })
-  }, [input, output])
+    let unlistenSync: UnlistenFn | null = null
+    let unlistenSwitch: UnlistenFn | null = null
+
+    async function setup() {
+      unlistenSync = await listen<{ from: string; input: string; output: string }>('sql-sync', (e) => {
+        if (e.payload.from === winId) return
+        setInput(e.payload.input)
+        setOutput(e.payload.output)
+      })
+
+      unlistenSwitch = await listen<string>('switch-sync', (e) => {
+        if (e.payload === winId) {
+          syncOut()
+        } else {
+          setInput(''); setOutput(''); setErrorMsg('')
+        }
+      })
+    }
+
+    setup()
+    return () => { unlistenSync?.(); unlistenSwitch?.() }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const highlightedOutput = useMemo(
     () => (output ? hljs.highlight(output, { language: 'sql' }).value : ''),
