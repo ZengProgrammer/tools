@@ -125,7 +125,7 @@ export default function PromptDialog({
     <>
     <Dialog open={open} onOpenChange={(_, data) => { if (!data.open) setCancelConfirm(true) }}>
       <DialogSurface style={{ width: 'calc(100vw - 40px)', maxWidth: '700px' }}>
-        <DialogBody>
+        <DialogBody style={{ display: 'block' }}>
           <DialogTitle style={{ textAlign: 'center' }}>翻译提示词</DialogTitle>
 
           <div className={styles.section}>
@@ -184,7 +184,7 @@ export default function PromptDialog({
     {/* New template dialog */}
     <Dialog open={showNew} onOpenChange={(_, d) => setShowNew(d.open)}>
       <DialogSurface>
-        <DialogBody>
+        <DialogBody style={{ display: 'block' }}>
           <DialogTitle style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <span style={{ flexShrink: 0 }}>新建模板</span>
             <Input value={newDesc} onChange={(_, d) => setNewDesc(d.value)} placeholder="模板描述（必填）" style={{ flex: 1 }} />
