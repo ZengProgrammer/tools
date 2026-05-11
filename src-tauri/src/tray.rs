@@ -61,6 +61,7 @@ fn show_and_navigate(app: &tauri::AppHandle, path: &str) {
         let _ = w.unminimize();
         let _ = w.set_focus();
         let _ = w.emit("navigate", path);
+        let _ = w.eval(&format!("window.location.hash = '{}'", path));
     }
 }
 
