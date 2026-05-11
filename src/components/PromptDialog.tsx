@@ -57,6 +57,7 @@ export default function PromptDialog({
   const [showNew, setShowNew] = useState(false)
   const [newDesc, setNewDesc] = useState('')
   const [newContent, setNewContent] = useState('')
+  const [editContent, setEditContent] = useState('')
   const [cancelConfirm, setCancelConfirm] = useState(false)
 
   function loadTemplates() {
@@ -75,7 +76,10 @@ export default function PromptDialog({
   }
 
   useEffect(() => {
-    if (open) loadTemplates()
+    if (open) {
+      loadTemplates()
+      setEditContent('')
+    }
   }, [open])
 
   const selectedTemplate = templates.find((t) => t.id === selectedId)
@@ -83,7 +87,7 @@ export default function PromptDialog({
   function handleSelect(id: number) {
     setSelectedId(id)
     const t = templates.find((tmpl) => tmpl.id === id)
-    if (t) onSystemPromptChange(t.content)
+    if (t) setEditContent(t.content)
   }
 
   async function handleCreate() {
@@ -113,7 +117,7 @@ export default function PromptDialog({
   }
 
   function handleConfirm() {
-    if (selectedTemplate) onSystemPromptChange(selectedTemplate.content)
+    onSystemPromptChange(editContent)
     onOpenChange(false)
   }
 
@@ -159,8 +163,8 @@ export default function PromptDialog({
             {/* Prompt editor */}
             <div style={{ width: '100%' }}>
               <Textarea
-                value={selectedTemplate?.content ?? ''}
-                onChange={(_, data) => { if (selectedTemplate) onSystemPromptChange(data.value) }}
+                value={editContent}
+                onChange={(_, data) => setEditContent(data.value)}
                 rows={8}
                 placeholder="选择模板以编辑提示词..."
                 style={{ width: '100%', resize: 'vertical' }}
