@@ -56,7 +56,7 @@ export default function TitleBar() {
     await win.toggleMaximize()
     setMaximized(!maximized)
   }
-  async function handleClose() { await win.close() }
+  async function handleClose() { await win.hide() }
   async function togglePin() {
     const next = !pinned
     setPinned(next)
