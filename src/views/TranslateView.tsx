@@ -48,7 +48,7 @@ const modelOptions = [
 const useStyles = makeStyles({
   page: { height: '100%', display: 'flex', flexDirection: 'column', gap: '12px', overflow: 'hidden' },
   controlRow: {
-    display: 'flex', alignItems: 'center', gap: '6px',
+    display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'nowrap', overflow: 'hidden',
     padding: '10px 12px',
     border: `1px solid ${tokens.colorNeutralStroke1}`, borderRadius: '8px',
   },

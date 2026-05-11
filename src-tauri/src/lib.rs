@@ -53,8 +53,8 @@ pub fn run() {
                 tauri::WebviewUrl::App("index.html".into()),
             )
             .title("悬浮窗")
-            .inner_size(600.0, 480.0)
-            .min_inner_size(400.0, 300.0)
+            .inner_size(680.0, 480.0)
+            .min_inner_size(450.0, 300.0)
             .center()
             .decorations(false)
             .always_on_top(true)

@@ -32,9 +32,9 @@ const winId = getCurrentWindow().label
 const useStyles = makeStyles({
   page: { height: '100%', display: 'flex', flexDirection: 'column', gap: '12px', overflow: 'hidden' },
   toolbar: {
-    display: 'flex', alignItems: 'center',
+    display: 'flex', alignItems: 'center', flexWrap: 'nowrap', overflow: 'hidden',
     padding: '10px 12px', border: `1px solid ${tokens.colorNeutralStroke1}`,
-    borderRadius: '8px', gap: '6px',
+    borderRadius: '8px', gap: '4px',
   },
   toolbarLeft: { display: 'flex', alignItems: 'center', gap: '6px', flex: 1, minWidth: 0 },
   toolbarRight: { display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0 },
