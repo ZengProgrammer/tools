@@ -17,6 +17,8 @@ import {
   DeleteRegular,
   CopyRegular,
   HistoryRegular,
+  CodeRegular,
+  ArrowSortRegular,
 } from '@fluentui/react-icons'
 import { saveInputHistory } from '../api/deepseek'
 import InputHistoryDialog from '../components/InputHistoryDialog'
@@ -171,11 +173,19 @@ export default function SqlView() {
           <Checkbox checked={uppercase} onChange={(_, d) => setUppercase(d.checked === true)} label={isCompact ? undefined : '关键字大写'} />
         </div>
         <div className={styles.toolbarRight}>
-          <Button size="small" appearance="primary" onClick={doFormat}>{isCompact ? '格式' : '格式化'}</Button>
-          <Button size="small" onClick={doCompress}>压缩</Button>
-          <Button size="small" appearance="subtle" icon={<HistoryRegular />} onClick={() => setShowHistory(true)}>
-            {isCompact ? '' : '历史'}
-          </Button>
+          {isCompact ? (
+            <>
+              <Button size="small" appearance="primary" icon={<CodeRegular />} onClick={doFormat} title="格式化" />
+              <Button size="small" icon={<ArrowSortRegular />} onClick={doCompress} title="压缩" />
+              <Button size="small" appearance="subtle" icon={<HistoryRegular />} onClick={() => setShowHistory(true)} title="历史" />
+            </>
+          ) : (
+            <>
+              <Button size="small" appearance="primary" onClick={doFormat}>格式化</Button>
+              <Button size="small" onClick={doCompress}>压缩</Button>
+              <Button size="small" appearance="subtle" icon={<HistoryRegular />} onClick={() => setShowHistory(true)}>历史</Button>
+            </>
+          )}
         </div>
       </div>
 
