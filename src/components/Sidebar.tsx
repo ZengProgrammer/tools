@@ -1,6 +1,5 @@
-import { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { Button, Tooltip, makeStyles, tokens } from '@fluentui/react-components'
+import { Button, makeStyles, tokens } from '@fluentui/react-components'
 import {
   HomeRegular,
   MicRegular,
@@ -8,10 +7,7 @@ import {
   DataAreaRegular,
   WeatherMoonRegular,
   WeatherSunnyRegular,
-  PinRegular,
-  PinOffRegular,
 } from '@fluentui/react-icons'
-import { getCurrentWindow } from '@tauri-apps/api/window'
 import { useTheme } from '../contexts/ThemeContext'
 
 const useStyles = makeStyles({
@@ -65,13 +61,6 @@ export default function Sidebar() {
   const navigate = useNavigate()
   const location = useLocation()
   const { isDark, toggleTheme } = useTheme()
-  const [pinned, setPinned] = useState(false)
-
-  async function togglePin() {
-    const next = !pinned
-    setPinned(next)
-    await getCurrentWindow().setAlwaysOnTop(next)
-  }
 
   return (
     <aside className={styles.aside}>
@@ -103,14 +92,6 @@ export default function Sidebar() {
           onClick={toggleTheme}
           title={isDark ? '切换浅色' : '切换深色'}
         />
-        <Tooltip content={pinned ? '取消置顶' : '固定窗口'} relationship="label">
-          <Button
-            appearance="subtle"
-            icon={pinned ? <PinOffRegular /> : <PinRegular />}
-            size="small"
-            onClick={togglePin}
-          />
-        </Tooltip>
         <span className={styles.version}>v0.2.0</span>
       </div>
     </aside>

@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import { getCurrentWindow } from '@tauri-apps/api/window'
-import { makeStyles, tokens } from '@fluentui/react-components'
+import { makeStyles, tokens, Tooltip } from '@fluentui/react-components'
 import {
   SubtractRegular,
   SquareRegular,
   DismissRegular,
+  PinRegular,
+  PinOffRegular,
 } from '@fluentui/react-icons'
 
 const useStyles = makeStyles({
@@ -45,7 +47,8 @@ export default function TitleBar() {
   const styles = useStyles()
   const win = getCurrentWindow()
   const [maximized, setMaximized] = useState(false)
-  const [hovered, setHovered] = useState<'min' | 'max' | 'close' | null>(null)
+  const [pinned, setPinned] = useState(false)
+  const [hovered, setHovered] = useState<string | null>(null)
 
   async function handleMin() { await win.minimize() }
   async function handleMax() {
@@ -53,12 +56,27 @@ export default function TitleBar() {
     setMaximized(!maximized)
   }
   async function handleClose() { await win.close() }
+  async function togglePin() {
+    const next = !pinned
+    setPinned(next)
+    await win.setAlwaysOnTop(next)
+  }
 
   return (
     <div className={styles.bar} onMouseDown={() => win.startDragging()}>
       <div className={styles.icon}>T</div>
       <span className={styles.title}>工具箱</span>
       <div className={styles.btns}>
+        <Tooltip content={pinned ? '取消置顶' : '固定窗口'} relationship="label">
+          <button
+            className={`${styles.btn} ${hovered === 'pin' ? styles.btnHover : ''}`}
+            onClick={togglePin}
+            onMouseEnter={() => setHovered('pin')}
+            onMouseLeave={() => setHovered(null)}
+          >
+            {pinned ? <PinOffRegular fontSize={14} /> : <PinRegular fontSize={14} />}
+          </button>
+        </Tooltip>
         <button
           className={`${styles.btn} ${hovered === 'min' ? styles.btnHover : ''}`}
           onClick={handleMin}
