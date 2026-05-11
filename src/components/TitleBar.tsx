@@ -55,7 +55,11 @@ export default function TitleBar() {
 
   async function handleMin() { await win.minimize() }
   async function handleMax() {
-    await win.toggleMaximize()
+    if (await win.isMaximized()) {
+      await win.unmaximize()
+    } else {
+      await win.maximize()
+    }
     setMaximized(await win.isMaximized())
   }
   async function handleClose() { await win.hide() }
