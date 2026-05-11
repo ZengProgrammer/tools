@@ -170,7 +170,7 @@ export default function SqlView() {
             <Option value="4" text={isCompact ? '4' : '4 空格'}>{isCompact ? '4' : '4 空格'}</Option>
             <Option value="tab" text="Tab">Tab</Option>
           </Dropdown>
-          <Checkbox checked={uppercase} onChange={(_, d) => setUppercase(d.checked === true)} label={isCompact ? '大' : '关键字大写'} />
+          <Checkbox checked={uppercase} onChange={(_, d) => setUppercase(d.checked === true)} label={isCompact ? '大写' : '关键字大写'} />
         </div>
         <div className={styles.toolbarRight}>
           {isCompact ? (
