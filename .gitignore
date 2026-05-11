@@ -30,5 +30,8 @@ src-tauri/gen/
 # Tool configs
 opencode.json
 
+# Claude Code
+.claude/
+
 # Local data
 data/
