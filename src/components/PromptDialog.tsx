@@ -193,6 +193,7 @@ export default function PromptDialog({
           <div style={{ width: '100%' }}>
             <Textarea value={newContent} onChange={(_, d) => setNewContent(d.value)} placeholder="提示词内容（必填）" rows={6} style={{ width: '100%', resize: 'vertical' }} />
           </div>
+          <div style={{ height: '12px' }} />
         </DialogBody>
         <DialogActions>
           <Button appearance="secondary" onClick={() => { setShowNew(false); setNewDesc(''); setNewContent('') }}>取消</Button>
