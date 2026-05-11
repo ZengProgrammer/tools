@@ -17,7 +17,7 @@ import {
   tokens,
   Divider,
 } from '@fluentui/react-components'
-import { AddRegular, StarRegular, StarOffRegular, DismissRegular } from '@fluentui/react-icons'
+import { AddRegular, StarRegular, StarOffRegular } from '@fluentui/react-icons'
 import {
   getPromptTemplates,
   savePromptTemplate,
@@ -36,10 +36,6 @@ const useStyles = makeStyles({
   },
   section: { display: 'flex', flexDirection: 'column', gap: '12px' },
   templateRow: { display: 'flex', gap: '6px', alignItems: 'center' },
-  newForm: {
-    display: 'flex', flexDirection: 'column', gap: '8px',
-    padding: '14px', border: `1px solid ${tokens.colorNeutralStroke1}`, borderRadius: '8px',
-  },
 })
 
 interface PromptDialogProps {
@@ -79,12 +75,7 @@ export default function PromptDialog({
   }
 
   useEffect(() => {
-    if (open) {
-      loadTemplates()
-      setShowNew(false)
-      setNewDesc('')
-      setNewContent('')
-    }
+    if (open) loadTemplates()
   }, [open])
 
   const selectedTemplate = templates.find((t) => t.id === selectedId)
@@ -126,6 +117,10 @@ export default function PromptDialog({
     onOpenChange(false)
   }
 
+  function optionText(t: PromptTemplate) {
+    return `${t.description}${t.is_default ? ' (默认)' : ''}`
+  }
+
   return (
     <>
     <Dialog open={open} onOpenChange={(_, data) => { if (!data.open) setCancelConfirm(true) }}>
@@ -137,14 +132,15 @@ export default function PromptDialog({
             {/* Template selector */}
             <div className={styles.templateRow}>
               <Dropdown
-                value={selectedId ? String(selectedId) : ''}
+                value={selectedId ? optionText(selectedTemplate!) : ''}
+                selectedOptions={selectedId ? [String(selectedId)] : []}
                 onOptionSelect={(_, d) => handleSelect(Number(d.optionValue))}
                 style={{ flex: 1 }}
                 placeholder="选择提示词模板..."
               >
                 {templates.map((t) => (
-                  <Option key={t.id} value={String(t.id)} text={`${t.description}${t.is_default ? ' (默认)' : ''}`}>
-                    {t.description}{t.is_default ? ' (默认)' : ''}
+                  <Option key={t.id} value={String(t.id)} text={optionText(t)}>
+                    {optionText(t)}
                   </Option>
                 ))}
               </Dropdown>
@@ -155,20 +151,8 @@ export default function PromptDialog({
                 onClick={handleSetDefault}
                 title="设为默认"
               />
-              <Button icon={showNew ? <DismissRegular /> : <AddRegular />} size="small" onClick={() => setShowNew(!showNew)} title={showNew ? '取消' : '新建模板'} />
+              <Button icon={<AddRegular />} size="small" onClick={() => setShowNew(true)} title="新建模板" />
             </div>
-
-            {/* New template form */}
-            {showNew && (
-              <div className={styles.newForm}>
-                <Input value={newDesc} onChange={(_, d) => setNewDesc(d.value)} placeholder="模板描述（必填）" />
-                <Textarea value={newContent} onChange={(_, d) => setNewContent(d.value)} placeholder="提示词内容（必填）" rows={3} />
-                <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
-                  <Button size="small" onClick={() => { setShowNew(false); setNewDesc(''); setNewContent('') }}>取消</Button>
-                  <Button size="small" appearance="primary" onClick={handleCreate}>创建</Button>
-                </div>
-              </div>
-            )}
 
             <Divider />
 
@@ -176,8 +160,9 @@ export default function PromptDialog({
             <Textarea
               value={selectedTemplate?.content ?? ''}
               onChange={(_, data) => { if (selectedTemplate) onSystemPromptChange(data.value) }}
-              rows={6}
+              rows={8}
               placeholder="选择模板以编辑提示词..."
+              style={{ resize: 'vertical' }}
             />
 
             {/* Placeholder hint */}
@@ -190,6 +175,22 @@ export default function PromptDialog({
         <DialogActions style={{ justifyContent: 'space-between' }}>
           <Button appearance="secondary" onClick={() => setCancelConfirm(true)}>取消</Button>
           <Button appearance="primary" onClick={handleConfirm}>确认</Button>
+        </DialogActions>
+      </DialogSurface>
+    </Dialog>
+
+    {/* New template dialog */}
+    <Dialog open={showNew} onOpenChange={(_, d) => setShowNew(d.open)}>
+      <DialogSurface>
+        <DialogBody>
+          <DialogTitle>新建模板</DialogTitle>
+          <Input value={newDesc} onChange={(_, d) => setNewDesc(d.value)} placeholder="模板描述（必填）" />
+          <div style={{ height: '8px' }} />
+          <Textarea value={newContent} onChange={(_, d) => setNewContent(d.value)} placeholder="提示词内容（必填）" rows={5} style={{ resize: 'vertical' }} />
+        </DialogBody>
+        <DialogActions>
+          <Button appearance="secondary" onClick={() => { setShowNew(false); setNewDesc(''); setNewContent('') }}>取消</Button>
+          <Button appearance="primary" onClick={handleCreate}>创建</Button>
         </DialogActions>
       </DialogSurface>
     </Dialog>
