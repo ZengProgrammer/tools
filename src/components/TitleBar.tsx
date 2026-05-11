@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { getCurrentWindow } from '@tauri-apps/api/window'
 import { makeStyles, tokens, Tooltip } from '@fluentui/react-components'
 import {
@@ -51,10 +51,12 @@ export default function TitleBar() {
   const [pinned, setPinned] = useState(false)
   const [hovered, setHovered] = useState<string | null>(null)
 
+  useEffect(() => { win.isMaximized().then(setMaximized) }, [])
+
   async function handleMin() { await win.minimize() }
   async function handleMax() {
     await win.toggleMaximize()
-    setMaximized(!maximized)
+    setMaximized(await win.isMaximized())
   }
   async function handleClose() { await win.hide() }
   async function togglePin() {
