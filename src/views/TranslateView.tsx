@@ -310,7 +310,7 @@ export default function TranslateView() {
         <Button appearance="subtle" icon={<HistoryRegular />} onClick={() => setShowHistory(true)}>翻译历史</Button>
       </div>
 
-      <PromptDialog open={showPrompt} systemPrompt={systemPrompt} onOpenChange={setShowPrompt} onSystemPromptChange={setSystemPrompt} />
+      <PromptDialog open={showPrompt} onOpenChange={setShowPrompt} onSystemPromptChange={setSystemPrompt} />
       <HistoryDialog open={showHistory} onOpenChange={setShowHistory} />
     </div>
   )

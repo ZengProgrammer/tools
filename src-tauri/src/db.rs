@@ -35,6 +35,13 @@ pub fn init_db(app: &tauri::App) -> Result<(), Box<dyn std::error::Error>> {
             tool        TEXT NOT NULL,
             input_text  TEXT NOT NULL,
             created_at  TEXT NOT NULL DEFAULT (datetime('now','localtime'))
+        );
+        CREATE TABLE IF NOT EXISTS prompt_templates (
+            id          INTEGER PRIMARY KEY AUTOINCREMENT,
+            description TEXT NOT NULL,
+            content     TEXT NOT NULL,
+            is_default  INTEGER NOT NULL DEFAULT 0,
+            created_at  TEXT NOT NULL DEFAULT (datetime('now','localtime'))
         );",
     )?;
     app.manage(DbState(Mutex::new(conn)));
@@ -162,4 +169,48 @@ pub fn delete_input_history(state: tauri::State<'_, DbState>, tool: String, ids:
 pub fn get_translation_history_count(state: tauri::State<'_, DbState>) -> Result<i64, String> {
     let conn = state.0.lock().map_err(|e| e.to_string())?;
     conn.query_row("SELECT COUNT(*) FROM translation_history", [], |row| row.get(0)).map_err(|e| e.to_string())
+}
+
+// ---- Prompt Templates ----
+
+#[derive(serde::Serialize)]
+pub struct PromptTemplate { pub id: i64, pub description: String, pub content: String, pub is_default: bool, pub created_at: String }
+
+#[tauri::command]
+pub fn get_prompt_templates(state: tauri::State<'_, DbState>) -> Result<Vec<PromptTemplate>, String> {
+    let conn = state.0.lock().map_err(|e| e.to_string())?;
+    let mut stmt = conn.prepare("SELECT id, description, content, is_default, created_at FROM prompt_templates ORDER BY id")
+        .map_err(|e| e.to_string())?;
+    let rows = stmt.query_map([], |row| Ok(PromptTemplate {
+        id: row.get(0)?, description: row.get(1)?, content: row.get(2)?,
+        is_default: row.get::<_, i64>(3)? != 0, created_at: row.get(4)?,
+    })).map_err(|e| e.to_string())?;
+    let mut records = Vec::new();
+    for row in rows { records.push(row.map_err(|e| e.to_string())?); }
+    Ok(records)
+}
+
+#[tauri::command]
+pub fn save_prompt_template(state: tauri::State<'_, DbState>, description: String, content: String) -> Result<(), String> {
+    let conn = state.0.lock().map_err(|e| e.to_string())?;
+    conn.execute("INSERT INTO prompt_templates (description, content) VALUES (?1, ?2)",
+        rusqlite::params![description, content]).map_err(|e| e.to_string())?;
+    Ok(())
+}
+
+#[tauri::command]
+pub fn delete_prompt_template(state: tauri::State<'_, DbState>, id: i64) -> Result<(), String> {
+    let conn = state.0.lock().map_err(|e| e.to_string())?;
+    conn.execute("DELETE FROM prompt_templates WHERE id = ?1", rusqlite::params![id])
+        .map_err(|e| e.to_string())?;
+    Ok(())
+}
+
+#[tauri::command]
+pub fn set_default_prompt_template(state: tauri::State<'_, DbState>, id: i64) -> Result<(), String> {
+    let conn = state.0.lock().map_err(|e| e.to_string())?;
+    conn.execute("UPDATE prompt_templates SET is_default = 0", []).map_err(|e| e.to_string())?;
+    conn.execute("UPDATE prompt_templates SET is_default = 1 WHERE id = ?1", rusqlite::params![id])
+        .map_err(|e| e.to_string())?;
+    Ok(())
 }

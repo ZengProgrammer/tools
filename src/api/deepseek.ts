@@ -80,3 +80,29 @@ export function getInputHistoryCount(tool: string): Promise<number> {
 export function deleteInputHistory(tool: string, ids: number[]): Promise<void> {
   return invoke('delete_input_history', { tool, ids })
 }
+
+// ---- Prompt Templates ----
+
+export interface PromptTemplate {
+  id: number
+  description: string
+  content: string
+  is_default: boolean
+  created_at: string
+}
+
+export function getPromptTemplates(): Promise<PromptTemplate[]> {
+  return invoke('get_prompt_templates')
+}
+
+export function savePromptTemplate(description: string, content: string): Promise<void> {
+  return invoke('save_prompt_template', { description, content })
+}
+
+export function deletePromptTemplate(id: number): Promise<void> {
+  return invoke('delete_prompt_template', { id })
+}
+
+export function setDefaultPromptTemplate(id: number): Promise<void> {
+  return invoke('set_default_prompt_template', { id })
+}
