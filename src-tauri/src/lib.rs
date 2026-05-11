@@ -54,7 +54,7 @@ pub fn run() {
             )
             .title("悬浮窗")
             .inner_size(780.0, 480.0)
-            .min_inner_size(450.0, 300.0)
+            .min_inner_size(72.0, 72.0)
             .center()
             .decorations(false)
             .always_on_top(true)
