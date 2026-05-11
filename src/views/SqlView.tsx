@@ -159,10 +159,10 @@ export default function SqlView() {
     <div className={styles.page}>
       <div className={styles.toolbar}>
         <div className={styles.toolbarLeft}>
-          <Dropdown value={dialect} onOptionSelect={(_, d) => setDialect(d.optionValue!)} style={{ width: '85px' }}>
+          <Dropdown value={dialect} onOptionSelect={(_, d) => setDialect(d.optionValue!)} style={{ width: '65px' }}>
             {dialects.map((d) => <Option key={d.value} value={d.value}>{d.label}</Option>)}
           </Dropdown>
-          <Dropdown value={tabWidth} onOptionSelect={(_, d) => setTabWidth(d.optionValue!)} style={{ width: '60px' }}>
+          <Dropdown value={tabWidth} onOptionSelect={(_, d) => setTabWidth(d.optionValue!)} style={{ width: '45px' }}>
             <Option value="2" text="2">2</Option>
             <Option value="4" text="4">4</Option>
             <Option value="tab" text="Tab">Tab</Option>
