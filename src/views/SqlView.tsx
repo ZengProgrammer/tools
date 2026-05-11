@@ -27,6 +27,7 @@ import 'highlight.js/styles/atom-one-dark.css'
 hljs.registerLanguage('sql', sql)
 
 const winId = getCurrentWindow().label
+const isCompact = winId === 'floating-ball'
 
 const dialects = [
   { label: 'SQLite', value: 'sqlite' },
@@ -159,20 +160,22 @@ export default function SqlView() {
     <div className={styles.page}>
       <div className={styles.toolbar}>
         <div className={styles.toolbarLeft}>
-          <Dropdown value={dialect} onOptionSelect={(_, d) => setDialect(d.optionValue!)} style={{ width: '110px' }}>
+          <Dropdown value={dialect} onOptionSelect={(_, d) => setDialect(d.optionValue!)} style={{ width: isCompact ? '80px' : '130px' }}>
             {dialects.map((d) => <Option key={d.value} value={d.value}>{d.label}</Option>)}
           </Dropdown>
-          <Dropdown value={tabWidth} onOptionSelect={(_, d) => setTabWidth(d.optionValue!)} style={{ width: '90px' }}>
-            <Option value="2" text="2 空格">2 空格</Option>
-            <Option value="4" text="4 空格">4 空格</Option>
+          <Dropdown value={tabWidth} onOptionSelect={(_, d) => setTabWidth(d.optionValue!)} style={{ width: isCompact ? '55px' : '100px' }}>
+            <Option value="2" text={isCompact ? '2' : '2 空格'}>{isCompact ? '2' : '2 空格'}</Option>
+            <Option value="4" text={isCompact ? '4' : '4 空格'}>{isCompact ? '4' : '4 空格'}</Option>
             <Option value="tab" text="Tab">Tab</Option>
           </Dropdown>
-          <Checkbox checked={uppercase} onChange={(_, d) => setUppercase(d.checked === true)} label="关键字大写" />
+          <Checkbox checked={uppercase} onChange={(_, d) => setUppercase(d.checked === true)} label={isCompact ? undefined : '关键字大写'} />
         </div>
         <div className={styles.toolbarRight}>
-          <Button size="small" appearance="primary" onClick={doFormat}>格式化</Button>
+          <Button size="small" appearance="primary" onClick={doFormat}>{isCompact ? '格式' : '格式化'}</Button>
           <Button size="small" onClick={doCompress}>压缩</Button>
-          <Button size="small" appearance="subtle" icon={<HistoryRegular />} onClick={() => setShowHistory(true)}>历史</Button>
+          <Button size="small" appearance="subtle" icon={<HistoryRegular />} onClick={() => setShowHistory(true)}>
+            {isCompact ? '' : '历史'}
+          </Button>
         </div>
       </div>
 
