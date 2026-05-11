@@ -15,8 +15,9 @@ import {
   useToastController,
   makeStyles,
   tokens,
+  Divider,
 } from '@fluentui/react-components'
-import { AddRegular, StarRegular, StarOffRegular } from '@fluentui/react-icons'
+import { AddRegular, StarRegular, StarOffRegular, DismissRegular } from '@fluentui/react-icons'
 import {
   getPromptTemplates,
   savePromptTemplate,
@@ -28,24 +29,16 @@ const DEFAULT_PROMPT_CONTENT = '你是一名专业翻译。将以下文本从{so
 const DEFAULT_PROMPT_DESC = '默认提示词'
 
 const useStyles = makeStyles({
-  hint: {
-    fontSize: '12px',
-    color: tokens.colorNeutralForeground4,
-  },
+  hint: { fontSize: '12px', color: tokens.colorNeutralForeground4 },
   code: {
-    background: tokens.colorNeutralBackground4,
-    color: tokens.colorBrandForeground1,
-    padding: '1px 6px',
-    borderRadius: '4px',
-    fontSize: '12px',
+    background: tokens.colorNeutralBackground4, color: tokens.colorBrandForeground1,
+    padding: '1px 6px', borderRadius: '4px', fontSize: '12px',
   },
-  row: {
-    display: 'flex', gap: '8px', alignItems: 'flex-end',
-  },
+  section: { display: 'flex', flexDirection: 'column', gap: '12px' },
+  templateRow: { display: 'flex', gap: '6px', alignItems: 'center' },
   newForm: {
     display: 'flex', flexDirection: 'column', gap: '8px',
-    marginTop: '8px', padding: '12px',
-    border: `1px solid ${tokens.colorNeutralStroke1}`, borderRadius: '8px',
+    padding: '14px', border: `1px solid ${tokens.colorNeutralStroke1}`, borderRadius: '8px',
   },
 })
 
@@ -110,9 +103,7 @@ export default function PromptDialog({
     try {
       await savePromptTemplate(newDesc.trim(), newContent.trim())
       dispatchToast(<Toast><ToastTitle>模板已创建</ToastTitle></Toast>, { intent: 'success' })
-      setShowNew(false)
-      setNewDesc('')
-      setNewContent('')
+      setShowNew(false); setNewDesc(''); setNewContent('')
       loadTemplates()
     } catch (e) {
       dispatchToast(<Toast><ToastTitle>{'创建失败: ' + String(e)}</ToastTitle></Toast>, { intent: 'error' })
@@ -131,100 +122,79 @@ export default function PromptDialog({
   }
 
   function handleConfirm() {
-    if (selectedTemplate) {
-      onSystemPromptChange(selectedTemplate.content)
-    }
+    if (selectedTemplate) onSystemPromptChange(selectedTemplate.content)
     onOpenChange(false)
-  }
-
-  function handleCancel() {
-    setCancelConfirm(true)
   }
 
   return (
     <>
-    <Dialog open={open} onOpenChange={(_, data) => { if (!data.open) handleCancel() }}>
-      <DialogSurface style={{ maxWidth: '700px', width: 'calc(100vw - 40px)' }}>
+    <Dialog open={open} onOpenChange={(_, data) => { if (!data.open) setCancelConfirm(true) }}>
+      <DialogSurface style={{ width: 'calc(100vw - 40px)', maxWidth: '700px' }}>
         <DialogBody>
           <DialogTitle>翻译提示词</DialogTitle>
 
-          <div className={styles.row}>
-            <Dropdown
-              value={selectedId ? String(selectedId) : ''}
-              onOptionSelect={(_, d) => handleSelect(Number(d.optionValue))}
-              style={{ flex: 1 }}
-              placeholder="选择提示词模板..."
-            >
-              {templates.map((t) => (
-                <Option key={t.id} value={String(t.id)} text={`${t.description}${t.is_default ? ' (默认)' : ''}`}>
-                  {t.description}{t.is_default ? ' (默认)' : ''}
-                </Option>
-              ))}
-            </Dropdown>
-            <Button
-              icon={selectedTemplate?.is_default ? <StarRegular /> : <StarOffRegular />}
-              size="small"
-              disabled={!selectedId || selectedTemplate?.is_default}
-              onClick={handleSetDefault}
-            >
-              设为默认
-            </Button>
-            <Button icon={<AddRegular />} size="small" onClick={() => setShowNew(!showNew)}>
-              新建
-            </Button>
-          </div>
-
-          {showNew && (
-            <div className={styles.newForm}>
-              <Input
-                value={newDesc}
-                onChange={(_, d) => setNewDesc(d.value)}
-                placeholder="模板描述（必填）"
+          <div className={styles.section}>
+            {/* Template selector */}
+            <div className={styles.templateRow}>
+              <Dropdown
+                value={selectedId ? String(selectedId) : ''}
+                onOptionSelect={(_, d) => handleSelect(Number(d.optionValue))}
+                style={{ flex: 1 }}
+                placeholder="选择提示词模板..."
+              >
+                {templates.map((t) => (
+                  <Option key={t.id} value={String(t.id)} text={`${t.description}${t.is_default ? ' (默认)' : ''}`}>
+                    {t.description}{t.is_default ? ' (默认)' : ''}
+                  </Option>
+                ))}
+              </Dropdown>
+              <Button
+                icon={selectedTemplate?.is_default ? <StarRegular /> : <StarOffRegular />}
+                size="small"
+                disabled={!selectedId || selectedTemplate?.is_default}
+                onClick={handleSetDefault}
+                title="设为默认"
               />
-              <Textarea
-                value={newContent}
-                onChange={(_, d) => setNewContent(d.value)}
-                placeholder="提示词内容（必填）"
-                rows={3}
-              />
-              <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
-                <Button size="small" onClick={() => { setShowNew(false); setNewDesc(''); setNewContent('') }}>
-                  取消
-                </Button>
-                <Button size="small" appearance="primary" onClick={handleCreate}>
-                  创建
-                </Button>
-              </div>
+              <Button icon={showNew ? <DismissRegular /> : <AddRegular />} size="small" onClick={() => setShowNew(!showNew)} title={showNew ? '取消' : '新建模板'} />
             </div>
-          )}
 
-          <Textarea
-            value={selectedTemplate?.content ?? ''}
-            onChange={(_, data) => {
-              if (selectedTemplate) {
-                onSystemPromptChange(data.value)
-              }
-            }}
-            rows={5}
-            placeholder="选择模板以编辑提示词..."
-          />
+            {/* New template form */}
+            {showNew && (
+              <div className={styles.newForm}>
+                <Input value={newDesc} onChange={(_, d) => setNewDesc(d.value)} placeholder="模板描述（必填）" />
+                <Textarea value={newContent} onChange={(_, d) => setNewContent(d.value)} placeholder="提示词内容（必填）" rows={3} />
+                <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+                  <Button size="small" onClick={() => { setShowNew(false); setNewDesc(''); setNewContent('') }}>取消</Button>
+                  <Button size="small" appearance="primary" onClick={handleCreate}>创建</Button>
+                </div>
+              </div>
+            )}
 
-          <div className={styles.hint}>
-            占位符 <code className={styles.code}>{'{source}'}</code> 源语言,{' '}
-            <code className={styles.code}>{'{target}'}</code> 目标语言
+            <Divider />
+
+            {/* Prompt editor */}
+            <Textarea
+              value={selectedTemplate?.content ?? ''}
+              onChange={(_, data) => { if (selectedTemplate) onSystemPromptChange(data.value) }}
+              rows={6}
+              placeholder="选择模板以编辑提示词..."
+            />
+
+            {/* Placeholder hint */}
+            <div className={styles.hint}>
+              <code className={styles.code}>{'{source}'}</code> 源语言{'  '}
+              <code className={styles.code}>{'{target}'}</code> 目标语言
+            </div>
           </div>
         </DialogBody>
         <DialogActions style={{ justifyContent: 'space-between' }}>
-          <Button appearance="secondary" onClick={handleCancel}>
-            取消
-          </Button>
-          <Button appearance="primary" onClick={handleConfirm}>
-            确认
-          </Button>
+          <Button appearance="secondary" onClick={() => setCancelConfirm(true)}>取消</Button>
+          <Button appearance="primary" onClick={handleConfirm}>确认</Button>
         </DialogActions>
       </DialogSurface>
     </Dialog>
 
+    {/* Cancel confirmation */}
     <Dialog open={cancelConfirm} onOpenChange={(_, d) => setCancelConfirm(d.open)}>
       <DialogSurface>
         <DialogBody>
