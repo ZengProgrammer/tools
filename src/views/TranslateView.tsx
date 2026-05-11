@@ -7,6 +7,7 @@ import {
   Option,
   Input,
   Textarea,
+  Spinner,
   Toast,
   ToastTitle,
   useToastController,
@@ -243,8 +244,8 @@ export default function TranslateView() {
               {showSettings ? '收起' : '设置'}
             </Button>
           )}
-          <Button appearance="primary" size={isCompact ? 'small' : 'large'} disabled={translating} onClick={doTranslate}>
-            翻译
+          <Button appearance="primary" size={isCompact ? 'small' : 'large'} disabled={translating} onClick={doTranslate} icon={translating ? <Spinner size="tiny" /> : undefined}>
+            {translating ? '翻译中...' : '翻译'}
           </Button>
         </div>
       </div>
@@ -288,7 +289,18 @@ export default function TranslateView() {
               {result && <Button appearance="subtle" size="small" onClick={() => { setResult(''); setErrorMsg('') }}>清空</Button>}
             </div>
           </div>
-          <Textarea className={styles.taInput} value={errorMsg ? '' : result} readOnly placeholder="翻译结果将显示在这里" />
+          {translating ? (
+            <div style={{
+              flex: 1, minHeight: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
+              border: `1px solid ${tokens.colorNeutralStroke1}`, borderRadius: '8px', gap: '10px',
+            }}>
+              <Spinner size="medium" />
+              <span style={{ color: tokens.colorNeutralForeground3, fontSize: '14px' }}>正在翻译...</span>
+            </div>
+          ) : (
+            <Textarea className={styles.taInput} value={errorMsg ? '' : result} readOnly placeholder="翻译结果将显示在这里" />
+          )}
+          {!translating && errorMsg && <div className={styles.alert}>{errorMsg}</div>}
           {errorMsg && <div className={styles.alert}>{errorMsg}</div>}
         </div>
       </div>
