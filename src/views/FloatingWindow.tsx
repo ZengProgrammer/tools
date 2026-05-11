@@ -61,6 +61,7 @@ export default function FloatingWindow() {
   const [contentVisible, setContentVisible] = useState(true)
   const contentVisibleRef = useRef(contentVisible)
   contentVisibleRef.current = contentVisible
+  const dragRef = useRef({ x: 0, y: 0, dragging: false })
 
   async function togglePin() {
     const next = !pinned
@@ -109,7 +110,23 @@ export default function FloatingWindow() {
 
   if (!contentVisible) {
     return (
-      <div className={styles.pet} onClick={() => toggleContent(activeKey)}>
+      <div className={styles.pet}
+        onPointerDown={(e) => {
+          dragRef.current = { x: e.clientX, y: e.clientY, dragging: false }
+          e.currentTarget.setPointerCapture(e.pointerId)
+        }}
+        onPointerMove={(e) => {
+          if (dragRef.current.dragging) return
+          if (Math.abs(e.clientX - dragRef.current.x) > 4 || Math.abs(e.clientY - dragRef.current.y) > 4) {
+            dragRef.current.dragging = true
+            appWindow.startDragging()
+          }
+        }}
+        onPointerUp={() => {
+          if (!dragRef.current.dragging) {
+            toggleContent(activeKey)
+          }
+        }}>
         <div className={styles.petIcon}>
           {(() => {
             const Icon = tools.find(t => t.key === activeKey)?.icon ?? tools[0].icon
