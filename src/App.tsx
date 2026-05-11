@@ -6,10 +6,6 @@ import { ThemeProvider } from './contexts/ThemeContext'
 import AppLayout from './components/AppLayout'
 import FloatingWindow from './views/FloatingWindow'
 import ToolStandalone from './views/ToolStandalone'
-import HomeView from './views/HomeView'
-import TranslateView from './views/TranslateView'
-import JsonView from './views/JsonView'
-import SqlView from './views/SqlView'
 
 export default function App() {
   const [mode, setMode] = useState<'loading' | 'floating' | 'tool' | 'desktop'>('loading')
@@ -37,12 +33,7 @@ export default function App() {
           <ToolStandalone />
         ) : (
           <Routes>
-            <Route path="/" element={<AppLayout />}>
-              <Route index element={<HomeView />} />
-              <Route path="translate" element={<TranslateView />} />
-              <Route path="json" element={<JsonView />} />
-              <Route path="sql" element={<SqlView />} />
-            </Route>
+            <Route path="*" element={<AppLayout />} />
           </Routes>
         )}
       </HashRouter>

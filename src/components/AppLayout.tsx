@@ -1,8 +1,12 @@
 import { useEffect } from 'react'
-import { Outlet, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { listen, type UnlistenFn } from '@tauri-apps/api/event'
 import { makeStyles } from '@fluentui/react-components'
 import Sidebar from './Sidebar'
+import HomeView from '../views/HomeView'
+import TranslateView from '../views/TranslateView'
+import JsonView from '../views/JsonView'
+import SqlView from '../views/SqlView'
 
 const useStyles = makeStyles({
   layout: {
@@ -19,6 +23,7 @@ const useStyles = makeStyles({
 export default function AppLayout() {
   const styles = useStyles()
   const navigate = useNavigate()
+  const location = useLocation()
 
   useEffect(() => {
     let unlisten: UnlistenFn | null = null
@@ -28,11 +33,25 @@ export default function AppLayout() {
     return () => { unlisten?.() }
   }, [navigate])
 
+  // Keep all views mounted (like FloatingWindow's display:none) so state persists across navigation
+  const path = location.pathname === '/' ? '/' : '/' + location.pathname.split('/')[1]
+
   return (
     <div className={styles.layout}>
       <Sidebar />
       <main className={styles.main}>
-        <Outlet />
+        <div style={{ display: path === '/' ? 'block' : 'none', height: '100%' }}>
+          <HomeView />
+        </div>
+        <div style={{ display: path === '/translate' ? 'block' : 'none', height: '100%' }}>
+          <TranslateView />
+        </div>
+        <div style={{ display: path === '/json' ? 'block' : 'none', height: '100%' }}>
+          <JsonView />
+        </div>
+        <div style={{ display: path === '/sql' ? 'block' : 'none', height: '100%' }}>
+          <SqlView />
+        </div>
       </main>
     </div>
   )
