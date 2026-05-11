@@ -78,11 +78,17 @@ export default function SqlView() {
 
   const inputRef = useRef(input)
   const outputRef = useRef(output)
+  const dialectRef = useRef(dialect)
+  const uppercaseRef = useRef(uppercase)
+  const tabWidthRef = useRef(tabWidth)
   inputRef.current = input
   outputRef.current = output
+  dialectRef.current = dialect
+  uppercaseRef.current = uppercase
+  tabWidthRef.current = tabWidth
 
   function syncOut() {
-    emit('sql-sync', { from: winId, input: inputRef.current, output: outputRef.current })
+    emit('sql-sync', { from: winId, input: inputRef.current, output: outputRef.current, dialect: dialectRef.current, uppercase: uppercaseRef.current, tabWidth: tabWidthRef.current })
   }
 
   useEffect(() => {
@@ -90,10 +96,13 @@ export default function SqlView() {
     let unlistenSwitch: UnlistenFn | null = null
 
     async function setup() {
-      unlistenSync = await listen<{ from: string; input: string; output: string }>('sql-sync', (e) => {
+      unlistenSync = await listen<{ from: string; input: string; output: string; dialect: string; uppercase: boolean; tabWidth: string }>('sql-sync', (e) => {
         if (e.payload.from === winId) return
         setInput(e.payload.input)
         setOutput(e.payload.output)
+        if (e.payload.dialect) setDialect(e.payload.dialect)
+        if (e.payload.uppercase !== undefined) setUppercase(e.payload.uppercase)
+        if (e.payload.tabWidth) setTabWidth(e.payload.tabWidth)
       })
 
       unlistenSwitch = await listen<string>('switch-sync', (e) => {

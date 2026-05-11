@@ -105,12 +105,16 @@ export default function TranslateView() {
   // Refs for latest values (same as Vue refs)
   const sourceTextRef = useRef(sourceText)
   const resultRef = useRef(result)
+  const sourceLangRef = useRef(sourceLang)
+  const targetLangRef = useRef(targetLang)
   sourceTextRef.current = sourceText
   resultRef.current = result
+  sourceLangRef.current = sourceLang
+  targetLangRef.current = targetLang
 
   // syncOut: emit current state (exactly like Vue)
   function syncOut() {
-    emit('translate-sync', { from: winId, sourceText: sourceTextRef.current, result: resultRef.current })
+    emit('translate-sync', { from: winId, sourceText: sourceTextRef.current, result: resultRef.current, sourceLang: sourceLangRef.current, targetLang: targetLangRef.current })
   }
 
   useEffect(() => {
@@ -129,10 +133,12 @@ export default function TranslateView() {
       }
 
       // Listen for sync from other window
-      unlistenSync = await listen<{ from: string; sourceText: string; result: string }>('translate-sync', (e) => {
+      unlistenSync = await listen<{ from: string; sourceText: string; result: string; sourceLang: string; targetLang: string }>('translate-sync', (e) => {
         if (e.payload.from === winId) return
         setSourceText(e.payload.sourceText)
         setResult(e.payload.result)
+        if (e.payload.sourceLang) setSourceLang(e.payload.sourceLang)
+        if (e.payload.targetLang) setTargetLang(e.payload.targetLang)
       })
 
       // Listen for settings sync

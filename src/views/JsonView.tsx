@@ -70,11 +70,15 @@ export default function JsonView() {
 
   const inputRef = useRef(input)
   const outputRef = useRef(output)
+  const indentRef = useRef(indent)
+  const sortKeysRef = useRef(sortKeys)
   inputRef.current = input
   outputRef.current = output
+  indentRef.current = indent
+  sortKeysRef.current = sortKeys
 
   function syncOut() {
-    emit('json-sync', { from: winId, input: inputRef.current, output: outputRef.current })
+    emit('json-sync', { from: winId, input: inputRef.current, output: outputRef.current, indent: indentRef.current, sortKeys: sortKeysRef.current })
   }
 
   useEffect(() => {
@@ -82,10 +86,12 @@ export default function JsonView() {
     let unlistenSwitch: UnlistenFn | null = null
 
     async function setup() {
-      unlistenSync = await listen<{ from: string; input: string; output: string }>('json-sync', (e) => {
+      unlistenSync = await listen<{ from: string; input: string; output: string; indent: string; sortKeys: boolean }>('json-sync', (e) => {
         if (e.payload.from === winId) return
         setInput(e.payload.input)
         setOutput(e.payload.output)
+        if (e.payload.indent) setIndent(e.payload.indent)
+        if (e.payload.sortKeys !== undefined) setSortKeys(e.payload.sortKeys)
       })
 
       unlistenSwitch = await listen<string>('switch-sync', (e) => {
