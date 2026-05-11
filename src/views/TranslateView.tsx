@@ -224,12 +224,12 @@ export default function TranslateView() {
       <div className={styles.controlRow}>
         <div className={styles.langGroup}>
           <span className={styles.label}>源语言</span>
-          <Dropdown value={sourceLang} onOptionSelect={(_, d) => setSourceLang(d.optionValue!)} style={{ width: '110px' }}>
+          <Dropdown value={sourceLang} onOptionSelect={(_, d) => setSourceLang(d.optionValue!)} style={{ width: '95px' }}>
             {languages.map((l) => <Option key={l.value} value={l.value}>{l.label}</Option>)}
           </Dropdown>
           <Button icon={<ArrowSortRegular />} size="small" disabled={sourceLang === 'auto'} onClick={swapLanguages} />
           <span className={styles.label}>目标语言</span>
-          <Dropdown value={targetLang} onOptionSelect={(_, d) => setTargetLang(d.optionValue!)} style={{ width: '110px' }}>
+          <Dropdown value={targetLang} onOptionSelect={(_, d) => setTargetLang(d.optionValue!)} style={{ width: '95px' }}>
             {languages.filter((x) => x.value !== 'auto').map((l) => <Option key={l.value} value={l.value}>{l.label}</Option>)}
           </Dropdown>
         </div>
