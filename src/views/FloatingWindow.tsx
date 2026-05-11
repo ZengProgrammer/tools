@@ -89,12 +89,12 @@ export default function FloatingWindow() {
     if (activeKey === tool) {
       const next = !contentVisible
       setContentVisible(next)
-      await appWindow.setSize(next ? new LogicalSize(680, 480) : new LogicalSize(680, 80))
+      await appWindow.setSize(next ? new LogicalSize(780, 480) : new LogicalSize(780, 80))
     } else {
       setActiveKey(tool)
       if (!contentVisible) {
         setContentVisible(true)
-        await appWindow.setSize(new LogicalSize(680, 480))
+        await appWindow.setSize(new LogicalSize(780, 480))
       }
     }
   }
@@ -107,7 +107,7 @@ export default function FloatingWindow() {
       setActiveKey(tool)
       if (!contentVisibleRef.current) {
         setContentVisible(true)
-        await appWindow.setSize(new LogicalSize(680, 480))
+        await appWindow.setSize(new LogicalSize(780, 480))
       }
     }
 
@@ -116,7 +116,7 @@ export default function FloatingWindow() {
       setActiveKey(event.payload)
       if (!contentVisibleRef.current) {
         setContentVisible(true)
-        await appWindow.setSize(new LogicalSize(680, 480))
+        await appWindow.setSize(new LogicalSize(780, 480))
       }
     }).then((fn) => { unlistenFloat = fn })
 

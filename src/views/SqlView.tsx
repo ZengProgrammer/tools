@@ -39,12 +39,12 @@ const dialects = [
 const useStyles = makeStyles({
   page: { height: '100%', display: 'flex', flexDirection: 'column', gap: '12px', overflow: 'hidden' },
   toolbar: {
-    display: 'flex', alignItems: 'center', flexWrap: 'nowrap', overflow: 'hidden',
-    padding: '8px 10px', border: `1px solid ${tokens.colorNeutralStroke1}`,
-    borderRadius: '8px',
+    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+    padding: '12px 18px', border: `1px solid ${tokens.colorNeutralStroke1}`,
+    borderRadius: '8px', flexWrap: 'wrap', gap: '10px',
   },
-  toolbarLeft: { display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 1, minWidth: 0 },
-  toolbarRight: { display: 'flex', alignItems: 'center', gap: '3px', flexShrink: 0, marginLeft: '6px' },
+  toolbarLeft: { display: 'flex', alignItems: 'center', gap: '12px' },
+  toolbarRight: { display: 'flex', gap: '8px' },
   textRow: { flex: 1, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', minHeight: 0, overflow: 'hidden' },
   textPanel: { display: 'flex', flexDirection: 'column', gap: '6px', minHeight: 0, overflow: 'hidden' },
   panelTop: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 },
@@ -157,22 +157,22 @@ export default function SqlView() {
 
   return (
     <div className={styles.page}>
-      <div className={styles.toolbar} style={{ flexWrap: 'nowrap', whiteSpace: 'nowrap' }}>
+      <div className={styles.toolbar}>
         <div className={styles.toolbarLeft}>
-          <Dropdown value={dialect} onOptionSelect={(_, d) => setDialect(d.optionValue!)} style={{ width: '55px' }}>
+          <Dropdown value={dialect} onOptionSelect={(_, d) => setDialect(d.optionValue!)} style={{ width: '110px' }}>
             {dialects.map((d) => <Option key={d.value} value={d.value}>{d.label}</Option>)}
           </Dropdown>
-          <Dropdown value={tabWidth} onOptionSelect={(_, d) => setTabWidth(d.optionValue!)} style={{ width: '38px' }}>
-            <Option value="2" text="2">2</Option>
-            <Option value="4" text="4">4</Option>
+          <Dropdown value={tabWidth} onOptionSelect={(_, d) => setTabWidth(d.optionValue!)} style={{ width: '90px' }}>
+            <Option value="2" text="2 空格">2 空格</Option>
+            <Option value="4" text="4 空格">4 空格</Option>
             <Option value="tab" text="Tab">Tab</Option>
           </Dropdown>
-          <Checkbox checked={uppercase} onChange={(_, d) => setUppercase(d.checked === true)} label="大写" />
+          <Checkbox checked={uppercase} onChange={(_, d) => setUppercase(d.checked === true)} label="关键字大写" />
         </div>
         <div className={styles.toolbarRight}>
           <Button size="small" appearance="primary" onClick={doFormat}>格式化</Button>
           <Button size="small" onClick={doCompress}>压缩</Button>
-          <Button size="small" appearance="subtle" icon={<HistoryRegular />} onClick={() => setShowHistory(true)} />
+          <Button size="small" appearance="subtle" icon={<HistoryRegular />} onClick={() => setShowHistory(true)}>历史</Button>
         </div>
       </div>
 

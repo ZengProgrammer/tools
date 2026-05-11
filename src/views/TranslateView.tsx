@@ -48,13 +48,13 @@ const modelOptions = [
 const useStyles = makeStyles({
   page: { height: '100%', display: 'flex', flexDirection: 'column', gap: '12px', overflow: 'hidden' },
   controlRow: {
-    display: 'flex', alignItems: 'center', flexWrap: 'nowrap', overflow: 'hidden',
-    padding: '8px 10px',
+    display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap',
+    padding: '10px 14px',
     border: `1px solid ${tokens.colorNeutralStroke1}`, borderRadius: '8px',
   },
-  langGroup: { display: 'flex', alignItems: 'center', gap: '2px', flexShrink: 1, minWidth: 0 },
-  label: { fontSize: '12px', color: tokens.colorNeutralForeground3, whiteSpace: 'nowrap' },
-  actionGroup: { display: 'flex', alignItems: 'center', gap: '3px', flexShrink: 0, marginLeft: '6px' },
+  langGroup: { display: 'flex', alignItems: 'center', gap: '4px' },
+  label: { fontSize: '13px', color: tokens.colorNeutralForeground3, whiteSpace: 'nowrap' },
+  actionGroup: { display: 'flex', alignItems: 'center', gap: '6px' },
   settingsPanel: { marginTop: '8px' },
   settingGrid: { display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap', marginTop: '8px' },
   textRow: {
@@ -221,18 +221,22 @@ export default function TranslateView() {
 
   return (
     <div className={styles.page}>
-      <div className={styles.controlRow} style={{ flexWrap: 'nowrap', whiteSpace: 'nowrap' }}>
+      <div className={styles.controlRow}>
         <div className={styles.langGroup}>
-          <Dropdown value={sourceLang} onOptionSelect={(_, d) => setSourceLang(d.optionValue!)} style={{ width: '50px' }}>
+          <span className={styles.label}>源语言</span>
+          <Dropdown value={sourceLang} onOptionSelect={(_, d) => setSourceLang(d.optionValue!)} style={{ width: '90px' }}>
             {languages.map((l) => <Option key={l.value} value={l.value}>{l.label}</Option>)}
           </Dropdown>
           <Button icon={<ArrowSortRegular />} size="small" disabled={sourceLang === 'auto'} onClick={swapLanguages} />
-          <Dropdown value={targetLang} onOptionSelect={(_, d) => setTargetLang(d.optionValue!)} style={{ width: '50px' }}>
+          <span className={styles.label}>目标语言</span>
+          <Dropdown value={targetLang} onOptionSelect={(_, d) => setTargetLang(d.optionValue!)} style={{ width: '90px' }}>
             {languages.filter((x) => x.value !== 'auto').map((l) => <Option key={l.value} value={l.value}>{l.label}</Option>)}
           </Dropdown>
         </div>
         <div className={styles.actionGroup}>
-          <Button icon={<SettingsRegular />} size="small" onClick={() => setShowSettings(!showSettings)} />
+          <Button icon={<SettingsRegular />} size="small" onClick={() => setShowSettings(!showSettings)}>
+            {showSettings ? '收起' : '设置'}
+          </Button>
           <Button appearance="primary" size="medium" disabled={translating} onClick={doTranslate}>
             翻译
           </Button>

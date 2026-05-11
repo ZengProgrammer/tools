@@ -32,12 +32,12 @@ const winId = getCurrentWindow().label
 const useStyles = makeStyles({
   page: { height: '100%', display: 'flex', flexDirection: 'column', gap: '12px', overflow: 'hidden' },
   toolbar: {
-    display: 'flex', alignItems: 'center', flexWrap: 'nowrap', overflow: 'hidden',
-    padding: '10px 12px', border: `1px solid ${tokens.colorNeutralStroke1}`,
-    borderRadius: '8px', gap: '4px',
+    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+    padding: '12px 18px', border: `1px solid ${tokens.colorNeutralStroke1}`,
+    borderRadius: '8px', flexWrap: 'wrap', gap: '10px',
   },
-  toolbarLeft: { display: 'flex', alignItems: 'center', gap: '6px', flex: 1, minWidth: 0 },
-  toolbarRight: { display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0 },
+  toolbarLeft: { display: 'flex', alignItems: 'center', gap: '12px' },
+  toolbarRight: { display: 'flex', gap: '8px' },
   status: { display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px', fontWeight: 500 },
   statusOk: { color: tokens.colorStatusSuccessForeground1 },
   statusErr: { color: tokens.colorStatusDangerForeground1 },
@@ -165,7 +165,7 @@ export default function JsonView() {
 
   return (
     <div className={styles.page}>
-      <div className={styles.toolbar} style={{ flexWrap: 'nowrap', whiteSpace: 'nowrap' }}>
+      <div className={styles.toolbar}>
         <div className={styles.toolbarLeft}>
           <Dropdown value={indent} onOptionSelect={(_, d) => setIndent(d.optionValue!)} style={{ width: '100px' }}>
             <Option value="2" text="2 空格">2 空格</Option>
