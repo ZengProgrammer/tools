@@ -126,11 +126,11 @@ export default function PromptDialog({
     <Dialog open={open} onOpenChange={(_, data) => { if (!data.open) setCancelConfirm(true) }}>
       <DialogSurface style={{ width: 'calc(100vw - 40px)', maxWidth: '700px' }}>
         <DialogBody>
-          <DialogTitle>翻译提示词</DialogTitle>
+          <DialogTitle style={{ textAlign: 'center' }}>翻译提示词</DialogTitle>
 
           <div className={styles.section}>
             {/* Template selector */}
-            <div className={styles.templateRow}>
+            <div className={styles.templateRow} style={{ justifyContent: 'flex-end' }}>
               <Dropdown
                 value={selectedId ? optionText(selectedTemplate!) : ''}
                 selectedOptions={selectedId ? [String(selectedId)] : []}
@@ -162,11 +162,11 @@ export default function PromptDialog({
               onChange={(_, data) => { if (selectedTemplate) onSystemPromptChange(data.value) }}
               rows={8}
               placeholder="选择模板以编辑提示词..."
-              style={{ resize: 'vertical' }}
+              style={{ width: '100%', resize: 'vertical' }}
             />
 
             {/* Placeholder hint */}
-            <div className={styles.hint}>
+            <div className={styles.hint} style={{ textAlign: 'right' }}>
               <code className={styles.code}>{'{source}'}</code> 源语言{'  '}
               <code className={styles.code}>{'{target}'}</code> 目标语言
             </div>
@@ -183,10 +183,11 @@ export default function PromptDialog({
     <Dialog open={showNew} onOpenChange={(_, d) => setShowNew(d.open)}>
       <DialogSurface>
         <DialogBody>
-          <DialogTitle>新建模板</DialogTitle>
-          <Input value={newDesc} onChange={(_, d) => setNewDesc(d.value)} placeholder="模板描述（必填）" />
-          <div style={{ height: '8px' }} />
-          <Textarea value={newContent} onChange={(_, d) => setNewContent(d.value)} placeholder="提示词内容（必填）" rows={5} style={{ resize: 'vertical' }} />
+          <DialogTitle style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <span style={{ flexShrink: 0 }}>新建模板</span>
+            <Input value={newDesc} onChange={(_, d) => setNewDesc(d.value)} placeholder="模板描述（必填）" style={{ flex: 1 }} />
+          </DialogTitle>
+          <Textarea value={newContent} onChange={(_, d) => setNewContent(d.value)} placeholder="提示词内容（必填）" rows={6} style={{ width: '100%', resize: 'vertical' }} />
         </DialogBody>
         <DialogActions>
           <Button appearance="secondary" onClick={() => { setShowNew(false); setNewDesc(''); setNewContent('') }}>取消</Button>
