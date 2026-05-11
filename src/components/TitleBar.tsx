@@ -70,6 +70,7 @@ export default function TitleBar() {
         <Tooltip content={pinned ? '取消置顶' : '固定窗口'} relationship="label">
           <button
             className={`${styles.btn} ${hovered === 'pin' ? styles.btnHover : ''}`}
+            onMouseDown={(e) => e.stopPropagation()}
             onClick={togglePin}
             onMouseEnter={() => setHovered('pin')}
             onMouseLeave={() => setHovered(null)}
@@ -79,6 +80,7 @@ export default function TitleBar() {
         </Tooltip>
         <button
           className={`${styles.btn} ${hovered === 'min' ? styles.btnHover : ''}`}
+          onMouseDown={(e) => e.stopPropagation()}
           onClick={handleMin}
           onMouseEnter={() => setHovered('min')}
           onMouseLeave={() => setHovered(null)}
@@ -87,6 +89,7 @@ export default function TitleBar() {
         </button>
         <button
           className={`${styles.btn} ${hovered === 'max' ? styles.btnHover : ''}`}
+          onMouseDown={(e) => e.stopPropagation()}
           onClick={handleMax}
           onMouseEnter={() => setHovered('max')}
           onMouseLeave={() => setHovered(null)}
@@ -95,6 +98,7 @@ export default function TitleBar() {
         </button>
         <button
           className={`${styles.btn} ${hovered === 'close' ? styles.closeHover : ''}`}
+          onMouseDown={(e) => e.stopPropagation()}
           onClick={handleClose}
           onMouseEnter={() => setHovered('close')}
           onMouseLeave={() => setHovered(null)}
