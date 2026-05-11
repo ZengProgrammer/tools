@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { getCurrentWindow, LogicalSize } from '@tauri-apps/api/window'
 import { listen, type UnlistenFn } from '@tauri-apps/api/event'
 import { makeStyles, tokens } from '@fluentui/react-components'
@@ -76,6 +76,8 @@ export default function FloatingWindow() {
   const [activeKey, setActiveKey] = useState('translate')
   const [pinned, setPinned] = useState(true)
   const [contentVisible, setContentVisible] = useState(true)
+  const contentVisibleRef = useRef(contentVisible)
+  contentVisibleRef.current = contentVisible
 
   async function togglePin() {
     const next = !pinned
@@ -103,7 +105,7 @@ export default function FloatingWindow() {
 
     ;(window as any).__floatNav = async (tool: string) => {
       setActiveKey(tool)
-      if (!contentVisible) {
+      if (!contentVisibleRef.current) {
         setContentVisible(true)
         await appWindow.setSize(new LogicalSize(600, 480))
       }
@@ -112,7 +114,7 @@ export default function FloatingWindow() {
     let unlistenFloat: UnlistenFn | null = null
     listen<string>('float-navigate', async (event) => {
       setActiveKey(event.payload)
-      if (!contentVisible) {
+      if (!contentVisibleRef.current) {
         setContentVisible(true)
         await appWindow.setSize(new LogicalSize(600, 480))
       }
