@@ -49,12 +49,12 @@ const useStyles = makeStyles({
   page: { height: '100%', display: 'flex', flexDirection: 'column', gap: '12px', overflow: 'hidden' },
   controlRow: {
     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-    gap: '8px', padding: '12px 14px',
+    gap: '8px', padding: '12px 14px', flexWrap: 'wrap',
     border: `1px solid ${tokens.colorNeutralStroke1}`, borderRadius: '8px',
   },
-  langGroup: { display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0 },
+  langGroup: { display: 'flex', alignItems: 'center', gap: '4px' },
   label: { fontSize: '12px', color: tokens.colorNeutralForeground3, whiteSpace: 'nowrap' },
-  actionGroup: { display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0, whiteSpace: 'nowrap' },
+  actionGroup: { display: 'flex', alignItems: 'center', gap: '6px' },
   settingsPanel: { marginTop: '8px' },
   settingGrid: { display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap', marginTop: '8px' },
   textRow: {

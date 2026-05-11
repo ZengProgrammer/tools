@@ -34,10 +34,10 @@ const useStyles = makeStyles({
   toolbar: {
     display: 'flex', justifyContent: 'space-between', alignItems: 'center',
     padding: '10px 14px', border: `1px solid ${tokens.colorNeutralStroke1}`,
-    borderRadius: '8px', gap: '6px',
+    borderRadius: '8px', gap: '6px', flexWrap: 'wrap',
   },
-  toolbarLeft: { display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 },
-  toolbarRight: { display: 'flex', gap: '4px', flexShrink: 0, whiteSpace: 'nowrap' },
+  toolbarLeft: { display: 'flex', alignItems: 'center', gap: '8px' },
+  toolbarRight: { display: 'flex', gap: '4px' },
   status: { display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px', fontWeight: 500 },
   statusOk: { color: tokens.colorStatusSuccessForeground1 },
   statusErr: { color: tokens.colorStatusDangerForeground1 },
