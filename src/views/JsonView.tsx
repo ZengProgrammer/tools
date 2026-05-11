@@ -32,12 +32,12 @@ const winId = getCurrentWindow().label
 const useStyles = makeStyles({
   page: { height: '100%', display: 'flex', flexDirection: 'column', gap: '12px', overflow: 'hidden' },
   toolbar: {
-    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-    padding: '10px 14px', border: `1px solid ${tokens.colorNeutralStroke1}`,
-    borderRadius: '8px', gap: '6px', flexWrap: 'wrap',
+    display: 'flex', alignItems: 'center',
+    padding: '10px 12px', border: `1px solid ${tokens.colorNeutralStroke1}`,
+    borderRadius: '8px', gap: '6px',
   },
-  toolbarLeft: { display: 'flex', alignItems: 'center', gap: '8px' },
-  toolbarRight: { display: 'flex', gap: '4px' },
+  toolbarLeft: { display: 'flex', alignItems: 'center', gap: '6px', flex: 1, minWidth: 0 },
+  toolbarRight: { display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0 },
   status: { display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px', fontWeight: 500 },
   statusOk: { color: tokens.colorStatusSuccessForeground1 },
   statusErr: { color: tokens.colorStatusDangerForeground1 },

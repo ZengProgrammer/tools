@@ -48,13 +48,13 @@ const modelOptions = [
 const useStyles = makeStyles({
   page: { height: '100%', display: 'flex', flexDirection: 'column', gap: '12px', overflow: 'hidden' },
   controlRow: {
-    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-    gap: '8px', padding: '12px 14px', flexWrap: 'wrap',
+    display: 'flex', alignItems: 'center', gap: '6px',
+    padding: '10px 12px',
     border: `1px solid ${tokens.colorNeutralStroke1}`, borderRadius: '8px',
   },
-  langGroup: { display: 'flex', alignItems: 'center', gap: '4px' },
+  langGroup: { display: 'flex', alignItems: 'center', gap: '3px', flex: 1, minWidth: 0 },
   label: { fontSize: '12px', color: tokens.colorNeutralForeground3, whiteSpace: 'nowrap' },
-  actionGroup: { display: 'flex', alignItems: 'center', gap: '6px' },
+  actionGroup: { display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0 },
   settingsPanel: { marginTop: '8px' },
   settingGrid: { display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap', marginTop: '8px' },
   textRow: {
@@ -234,10 +234,10 @@ export default function TranslateView() {
           </Dropdown>
         </div>
         <div className={styles.actionGroup}>
-          <Button icon={<SettingsRegular />} onClick={() => setShowSettings(!showSettings)}>
-            {showSettings ? '收起设置' : '设置'}
+          <Button icon={<SettingsRegular />} size="small" onClick={() => setShowSettings(!showSettings)}>
+            {showSettings ? '收起' : '设置'}
           </Button>
-          <Button appearance="primary" size="large" disabled={translating} onClick={doTranslate}>
+          <Button appearance="primary" size="medium" disabled={translating} onClick={doTranslate}>
             翻译
           </Button>
         </div>

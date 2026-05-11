@@ -39,12 +39,12 @@ const dialects = [
 const useStyles = makeStyles({
   page: { height: '100%', display: 'flex', flexDirection: 'column', gap: '12px', overflow: 'hidden' },
   toolbar: {
-    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-    padding: '10px 14px', border: `1px solid ${tokens.colorNeutralStroke1}`,
-    borderRadius: '8px', gap: '6px', flexWrap: 'wrap',
+    display: 'flex', alignItems: 'center',
+    padding: '10px 12px', border: `1px solid ${tokens.colorNeutralStroke1}`,
+    borderRadius: '8px', gap: '6px',
   },
-  toolbarLeft: { display: 'flex', alignItems: 'center', gap: '8px' },
-  toolbarRight: { display: 'flex', gap: '4px' },
+  toolbarLeft: { display: 'flex', alignItems: 'center', gap: '6px', flex: 1, minWidth: 0 },
+  toolbarRight: { display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0 },
   textRow: { flex: 1, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', minHeight: 0, overflow: 'hidden' },
   textPanel: { display: 'flex', flexDirection: 'column', gap: '6px', minHeight: 0, overflow: 'hidden' },
   panelTop: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 },
