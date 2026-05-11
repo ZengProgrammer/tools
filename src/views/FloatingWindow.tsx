@@ -17,57 +17,40 @@ const tools = [
 
 const useStyles = makeStyles({
   win: {
-    width: '100vw',
-    height: '100vh',
-    display: 'flex',
-    flexDirection: 'column',
-    overflow: 'hidden',
+    width: '100vw', height: '100vh', display: 'flex', flexDirection: 'column', overflow: 'hidden',
   },
   titleBar: {
-    height: '32px',
-    minHeight: '32px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    position: 'relative',
-    fontSize: '12px',
-    color: tokens.colorNeutralForeground4,
-    cursor: 'grab',
-    borderBottom: `1px solid ${tokens.colorNeutralStroke1}`,
-    letterSpacing: '1px',
-    userSelect: 'none',
+    height: '32px', minHeight: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+    position: 'relative', fontSize: '12px', color: tokens.colorNeutralForeground4,
+    cursor: 'grab', borderBottom: `1px solid ${tokens.colorNeutralStroke1}`, letterSpacing: '1px', userSelect: 'none',
   },
-  pinBtn: {
-    position: 'absolute',
-    right: '8px',
-    cursor: 'pointer',
-    color: tokens.colorNeutralForeground4,
-    transition: 'color 0.15s',
-  },
+  pinBtn: { position: 'absolute', right: '8px', cursor: 'pointer', color: tokens.colorNeutralForeground4, transition: 'color 0.15s' },
   pinBtnActive: { color: tokens.colorBrandForeground1 },
   tabBar: {
-    display: 'flex',
-    borderBottom: `1px solid ${tokens.colorNeutralStroke1}`,
-    flexShrink: 0,
+    display: 'flex', borderBottom: `1px solid ${tokens.colorNeutralStroke1}`, flexShrink: 0,
   },
   tabBtn: {
-    flex: 1,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: '6px',
-    padding: '9px 0',
-    fontSize: '13px',
-    cursor: 'pointer',
-    transition: 'all 0.15s',
-    borderBottom: '2px solid transparent',
-    userSelect: 'none',
+    flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', padding: '9px 0',
+    fontSize: '13px', cursor: 'pointer', transition: 'all 0.15s', borderBottom: '2px solid transparent', userSelect: 'none',
   },
-  content: {
-    flex: 1,
-    overflow: 'auto',
-    minHeight: 0,
-    padding: '10px',
+  content: { flex: 1, overflow: 'auto', minHeight: 0, padding: '10px' },
+  pet: {
+    width: '100vw', height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
+    cursor: 'pointer', userSelect: 'none', position: 'relative',
+  },
+  petIcon: {
+    width: '56px', height: '56px', borderRadius: '50%',
+    background: `linear-gradient(135deg, ${tokens.colorBrandBackground}, ${tokens.colorBrandBackgroundHover})`,
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    color: '#fff', fontSize: '26px', fontWeight: 700,
+    animation: 'pet-pulse 2s ease-in-out infinite, pet-float 3s ease-in-out infinite',
+  },
+  petPin: {
+    position: 'absolute', top: '2px', right: '2px',
+    width: '20px', height: '20px', borderRadius: '50%',
+    background: tokens.colorNeutralBackground3, border: `1px solid ${tokens.colorNeutralStroke1}`,
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    cursor: 'pointer',
   },
 })
 
@@ -89,7 +72,7 @@ export default function FloatingWindow() {
     if (activeKey === tool) {
       const next = !contentVisible
       setContentVisible(next)
-      await appWindow.setSize(next ? new LogicalSize(780, 480) : new LogicalSize(780, 80))
+      await appWindow.setSize(next ? new LogicalSize(780, 480) : new LogicalSize(72, 72))
     } else {
       setActiveKey(tool)
       if (!contentVisible) {
@@ -124,6 +107,27 @@ export default function FloatingWindow() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  if (!contentVisible) {
+    return (
+      <div className={styles.pet} onMouseDown={() => appWindow.startDragging()} onClick={() => toggleContent(activeKey)}>
+        <div className={styles.petIcon}>
+          {(() => {
+            const Icon = tools.find(t => t.key === activeKey)?.icon ?? tools[0].icon
+            return <Icon fontSize={28} />
+          })()}
+        </div>
+        <div
+          className={styles.petPin}
+          onMouseDown={(e) => e.stopPropagation()}
+          onClick={(e) => { e.stopPropagation(); togglePin() }}
+          title={pinned ? '取消置顶' : '置顶'}
+        >
+          <PinRegular fontSize={10} color={pinned ? tokens.colorBrandForeground1 : tokens.colorNeutralForeground4} />
+        </div>
+      </div>
+    )
+  }
+
   // Keep all views mounted (like Vue's <KeepAlive>) so event listeners stay active
   return (
     <div className={styles.win}>
@@ -156,19 +160,17 @@ export default function FloatingWindow() {
         ))}
       </div>
 
-      {contentVisible && (
-        <div className={styles.content}>
-          <div style={{ display: activeKey === 'translate' ? 'block' : 'none', height: '100%' }}>
-            <TranslateView />
-          </div>
-          <div style={{ display: activeKey === 'json' ? 'block' : 'none', height: '100%' }}>
-            <JsonView />
-          </div>
-          <div style={{ display: activeKey === 'sql' ? 'block' : 'none', height: '100%' }}>
-            <SqlView />
-          </div>
+      <div className={styles.content}>
+        <div style={{ display: activeKey === 'translate' ? 'block' : 'none', height: '100%' }}>
+          <TranslateView />
         </div>
-      )}
+        <div style={{ display: activeKey === 'json' ? 'block' : 'none', height: '100%' }}>
+          <JsonView />
+        </div>
+        <div style={{ display: activeKey === 'sql' ? 'block' : 'none', height: '100%' }}>
+          <SqlView />
+        </div>
+      </div>
     </div>
   )
 }

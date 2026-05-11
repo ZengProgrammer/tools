@@ -13,3 +13,13 @@ body {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #555; border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: #777; }
+
+@keyframes pet-pulse {
+  0%, 100% { box-shadow: 0 0 12px rgba(0,184,200,0.4), 0 0 24px rgba(0,184,200,0.15); }
+  50% { box-shadow: 0 0 24px rgba(0,184,200,0.7), 0 0 48px rgba(0,184,200,0.35); }
+}
+
+@keyframes pet-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
