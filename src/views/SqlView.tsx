@@ -159,12 +159,12 @@ export default function SqlView() {
     <div className={styles.page}>
       <div className={styles.toolbar}>
         <div className={styles.toolbarLeft}>
-          <Dropdown value={dialect} onOptionSelect={(_, d) => setDialect(d.optionValue!)} style={{ width: '100px' }}>
+          <Dropdown value={dialect} onOptionSelect={(_, d) => setDialect(d.optionValue!)} style={{ width: '85px' }}>
             {dialects.map((d) => <Option key={d.value} value={d.value}>{d.label}</Option>)}
           </Dropdown>
-          <Dropdown value={tabWidth} onOptionSelect={(_, d) => setTabWidth(d.optionValue!)} style={{ width: '80px' }}>
-            <Option value="2" text="2 空格">2 空格</Option>
-            <Option value="4" text="4 空格">4 空格</Option>
+          <Dropdown value={tabWidth} onOptionSelect={(_, d) => setTabWidth(d.optionValue!)} style={{ width: '60px' }}>
+            <Option value="2" text="2">2</Option>
+            <Option value="4" text="4">4</Option>
             <Option value="tab" text="Tab">Tab</Option>
           </Dropdown>
           <Checkbox checked={uppercase} onChange={(_, d) => setUppercase(d.checked === true)} label="大写" />
@@ -172,7 +172,7 @@ export default function SqlView() {
         <div className={styles.toolbarRight}>
           <Button size="small" appearance="primary" onClick={doFormat}>格式化</Button>
           <Button size="small" onClick={doCompress}>压缩</Button>
-          <Button size="small" appearance="subtle" icon={<HistoryRegular />} onClick={() => setShowHistory(true)}>历史</Button>
+          <Button size="small" appearance="subtle" icon={<HistoryRegular />} onClick={() => setShowHistory(true)} />
         </div>
       </div>
 
