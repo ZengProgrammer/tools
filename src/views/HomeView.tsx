@@ -111,7 +111,7 @@ const tools = [
     icon: DataAreaRegular,
   },
   {
-    name: '时间戳',
+    name: '时间戳工具',
     desc: '时间戳 / 日期时间双向转换',
     detail: '支持秒/毫秒/微秒/纳秒，实时时钟，一键复制。',
     route: '/timestamp',

@@ -14,7 +14,7 @@ const tools = [
   { name: '翻译', icon: MicRegular, key: 'translate', color: '#00f0ff' },
   { name: 'JSON', icon: CodeRegular, key: 'json', color: '#00ff41' },
   { name: 'SQL', icon: DataAreaRegular, key: 'sql', color: '#ff00ff' },
-  { name: '时间戳', icon: ClockRegular, key: 'timestamp', color: '#fcee0a' },
+  { name: '时间戳工具', icon: ClockRegular, key: 'timestamp', color: '#fcee0a' },
 ] as const
 
 const useStyles = makeStyles({
