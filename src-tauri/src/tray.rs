@@ -12,6 +12,7 @@ pub fn build_tray_menu<R: tauri::Runtime>(app: &impl tauri::Manager<R>, mode: &A
             let translate = MenuItem::with_id(app, "translate", "翻译工具", true, None::<&str>)?;
             let json_tool = MenuItem::with_id(app, "json", "JSON工具", true, None::<&str>)?;
             let sql_tool = MenuItem::with_id(app, "sql", "SQL工具", true, None::<&str>)?;
+            let timestamp = MenuItem::with_id(app, "timestamp", "时间戳", true, None::<&str>)?;
             let sep1 = PredefinedMenuItem::separator(app)?;
             let toggle_max = MenuItem::with_id(app, "toggle_max", "最大化/最小化", true, None::<&str>)?;
             let toggle_show = MenuItem::with_id(app, "toggle_show", "显示/隐藏", true, None::<&str>)?;
@@ -20,7 +21,7 @@ pub fn build_tray_menu<R: tauri::Runtime>(app: &impl tauri::Manager<R>, mode: &A
             let sep2 = PredefinedMenuItem::separator(app)?;
             let quit = MenuItem::with_id(app, "quit", "退出", true, None::<&str>)?;
             Menu::with_items(app, &[
-                &home, &translate, &json_tool, &sql_tool,
+                &home, &translate, &json_tool, &sql_tool, &timestamp,
                 &sep1,
                 &toggle_max, &toggle_show, &autostart, &switch,
                 &sep2, &quit,
@@ -30,6 +31,7 @@ pub fn build_tray_menu<R: tauri::Runtime>(app: &impl tauri::Manager<R>, mode: &A
             let translate = MenuItem::with_id(app, "float_translate", "翻译工具", true, None::<&str>)?;
             let json_tool = MenuItem::with_id(app, "float_json", "JSON工具", true, None::<&str>)?;
             let sql_tool = MenuItem::with_id(app, "float_sql", "SQL工具", true, None::<&str>)?;
+            let timestamp = MenuItem::with_id(app, "float_timestamp", "时间戳", true, None::<&str>)?;
             let sep1 = PredefinedMenuItem::separator(app)?;
             let toggle_show = MenuItem::with_id(app, "toggle_show", "显示/隐藏", true, None::<&str>)?;
             let autostart = MenuItem::with_id(app, "autostart", "添加开机自启", true, None::<&str>)?;
@@ -37,7 +39,7 @@ pub fn build_tray_menu<R: tauri::Runtime>(app: &impl tauri::Manager<R>, mode: &A
             let sep2 = PredefinedMenuItem::separator(app)?;
             let quit = MenuItem::with_id(app, "quit", "退出", true, None::<&str>)?;
             Menu::with_items(app, &[
-                &translate, &json_tool, &sql_tool,
+                &translate, &json_tool, &sql_tool, &timestamp,
                 &sep1,
                 &toggle_show, &autostart, &switch,
                 &sep2, &quit,
@@ -72,9 +74,11 @@ pub fn handle_menu_event(app: &tauri::AppHandle, event: tauri::menu::MenuEvent) 
         "translate" => show_and_navigate(app, "/translate"),
         "json" => show_and_navigate(app, "/json"),
         "sql" => show_and_navigate(app, "/sql"),
+        "timestamp" => show_and_navigate(app, "/timestamp"),
         "float_translate" => float_navigate(app, "translate"),
         "float_json" => float_navigate(app, "json"),
         "float_sql" => float_navigate(app, "sql"),
+        "float_timestamp" => float_navigate(app, "timestamp"),
         "toggle_show" => {
             let mode = app.state::<ModeState>().0.lock().unwrap().clone();
             let label = match mode { AppMode::Desktop => "main", AppMode::Floating => "floating-ball" };
