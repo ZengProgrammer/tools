@@ -12,7 +12,7 @@ pub fn build_tray_menu<R: tauri::Runtime>(app: &impl tauri::Manager<R>, mode: &A
             let translate = MenuItem::with_id(app, "translate", "翻译工具", true, None::<&str>)?;
             let json_tool = MenuItem::with_id(app, "json", "JSON工具", true, None::<&str>)?;
             let sql_tool = MenuItem::with_id(app, "sql", "SQL工具", true, None::<&str>)?;
-            let timestamp = MenuItem::with_id(app, "timestamp", "时间戳", true, None::<&str>)?;
+            let timestamp = MenuItem::with_id(app, "timestamp", "时间戳工具", true, None::<&str>)?;
             let sep1 = PredefinedMenuItem::separator(app)?;
             let toggle_max = MenuItem::with_id(app, "toggle_max", "最大化/最小化", true, None::<&str>)?;
             let toggle_show = MenuItem::with_id(app, "toggle_show", "显示/隐藏", true, None::<&str>)?;
@@ -31,7 +31,7 @@ pub fn build_tray_menu<R: tauri::Runtime>(app: &impl tauri::Manager<R>, mode: &A
             let translate = MenuItem::with_id(app, "float_translate", "翻译工具", true, None::<&str>)?;
             let json_tool = MenuItem::with_id(app, "float_json", "JSON工具", true, None::<&str>)?;
             let sql_tool = MenuItem::with_id(app, "float_sql", "SQL工具", true, None::<&str>)?;
-            let timestamp = MenuItem::with_id(app, "float_timestamp", "时间戳", true, None::<&str>)?;
+            let timestamp = MenuItem::with_id(app, "float_timestamp", "时间戳工具", true, None::<&str>)?;
             let sep1 = PredefinedMenuItem::separator(app)?;
             let toggle_show = MenuItem::with_id(app, "toggle_show", "显示/隐藏", true, None::<&str>)?;
             let autostart = MenuItem::with_id(app, "autostart", "添加开机自启", true, None::<&str>)?;
