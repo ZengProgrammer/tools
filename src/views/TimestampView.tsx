@@ -26,6 +26,13 @@ const useStyles = makeStyles({
   textPanel: { display: 'flex', flexDirection: 'column', gap: '6px', minHeight: 0, overflow: 'hidden' },
   panelTop: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 },
   panelTitle: { fontSize: '14px', fontWeight: 600, color: tokens.colorNeutralForeground1 },
+  dateInput: {
+    height: '32px', padding: '0 8px',
+    background: tokens.colorNeutralBackground1,
+    border: `1px solid ${tokens.colorNeutralStroke1}`, borderRadius: tokens.borderRadiusMedium,
+    color: tokens.colorNeutralForeground1, fontSize: '14px',
+    fontFamily: "'JetBrains Mono', Consolas, monospace", outline: 'none',
+  },
   precisionRow: { display: 'flex', alignItems: 'center', gap: '6px', marginTop: '4px' },
   precisionLabel: { fontSize: '12px', color: tokens.colorNeutralForeground4, width: '30px', flexShrink: 0 },
   precisionValue: {
@@ -38,11 +45,13 @@ const useStyles = makeStyles({
 
 function formatDateTime(ts: number): string {
   const d = new Date(ts * 1000)
-  const fmt = new Intl.DateTimeFormat('zh-CN', {
-    timeZone: 'Asia/Shanghai', year: 'numeric', month: '2-digit', day: '2-digit',
-    hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false,
-  })
-  return fmt.format(d).replace(/\//g, '-')
+  const y = d.getFullYear()
+  const m = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  const h = String(d.getHours()).padStart(2, '0')
+  const min = String(d.getMinutes()).padStart(2, '0')
+  const s = String(d.getSeconds()).padStart(2, '0')
+  return `${y}-${m}-${day} ${h}:${min}:${s}`
 }
 
 export default function TimestampView() {
@@ -50,7 +59,6 @@ export default function TimestampView() {
   const { dispatchToast } = useToastController()
 
   const [tsInput, setTsInput] = useState('')
-  const [dateInput, setDateInput] = useState('')
   const [tsOutput, setTsOutput] = useState('')
   const [dateOutput, setDateOutput] = useState('')
   const [msOutput, setMsOutput] = useState('')
@@ -60,6 +68,7 @@ export default function TimestampView() {
   const [live, setLive] = useState(true)
   const [inputSide, setInputSide] = useState<'ts' | 'date' | null>(null)
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const dateInputRef = useRef<HTMLInputElement>(null)
 
   function getNow(): number {
     return Math.floor(Date.now() / 1000)
@@ -78,9 +87,8 @@ export default function TimestampView() {
   function startLive() {
     setLive(true)
     setTsInput('')
-    setDateInput('')
-    setErrorMsg('')
     setInputSide(null)
+    setErrorMsg('')
     updateOutputs(getNow())
     if (intervalRef.current) clearInterval(intervalRef.current)
     intervalRef.current = setInterval(() => {
@@ -99,18 +107,23 @@ export default function TimestampView() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  function handleTsInput(val: string) {
-    setTsInput(val)
+  function handleTsFocus() {
     setInputSide('ts')
-    if (val === '') { startLive(); return }
     stopLive()
   }
 
-  function handleDateInput(val: string) {
-    setDateInput(val)
+  function handleDateFocus() {
     setInputSide('date')
-    if (val === '') { startLive(); return }
     stopLive()
+  }
+
+  function handleTsInput(val: string) {
+    setTsInput(val)
+    if (val === '') { startLive(); return }
+  }
+
+  function handleDateInput(val: string) {
+    if (val === '') { startLive(); return }
   }
 
   function doConvert() {
@@ -121,8 +134,8 @@ export default function TimestampView() {
         return
       }
       updateOutputs(Number(tsInput.trim()))
-    } else if (inputSide === 'date' && dateInput.trim()) {
-      const d = new Date(dateInput.trim())
+    } else if (inputSide === 'date' && dateInputRef.current?.value) {
+      const d = new Date(dateInputRef.current.value)
       if (isNaN(d.getTime())) {
         setErrorMsg('日期格式无效')
         return
@@ -151,38 +164,29 @@ export default function TimestampView() {
       </div>
 
       <div className={styles.textRow}>
-        <div className={styles.textPanel}>
-          <div className={styles.panelTop}>
-            <span className={styles.panelTitle}>时间戳 (秒)</span>
-            {tsOutput && <Button icon={<CopyRegular />} appearance="subtle" size="small" onClick={() => copyText(tsOutput)}>复制</Button>}
-          </div>
-          <Input
-            value={live ? tsOutput : tsInput}
-            onChange={(_, d) => handleTsInput(d.value)}
-            placeholder="输入秒级时间戳..."
-            style={{ fontFamily: "'JetBrains Mono', Consolas, monospace" }}
-          />
-          {inputSide === 'ts' && tsInput && (
-            <Button icon={<DeleteRegular />} appearance="subtle" size="small" onClick={() => { setTsInput(''); if (!dateInput) startLive() }}>清空</Button>
-          )}
-        </div>
-
+        {/* Left: Date/Time */}
         <div className={styles.textPanel}>
           <div className={styles.panelTop}>
             <span className={styles.panelTitle}>日期时间</span>
-            <div style={{ display: 'flex', gap: '2px' }}>
-              {dateOutput && <Button appearance="subtle" size="small" onClick={() => copyText(dateOutput)}>复制</Button>}
-              {!live && dateInput && <Button icon={<DeleteRegular />} appearance="subtle" size="small" onClick={() => { setDateInput(''); if (!tsInput) startLive() }}>清空</Button>}
-            </div>
+            {dateOutput && <Button icon={<CopyRegular />} appearance="subtle" size="small" onClick={() => copyText(dateOutput)}>复制</Button>}
           </div>
-          <Input
-            value={live ? dateOutput : dateInput}
-            onChange={(_, d) => handleDateInput(d.value)}
-            placeholder="输入日期，如 2026-05-12 01:02:03"
-            style={{ fontFamily: "'JetBrains Mono', Consolas, monospace" }}
+          <input
+            ref={dateInputRef}
+            type="datetime-local"
+            step="1"
+            className={styles.dateInput}
+            onFocus={handleDateFocus}
+            onChange={(e) => handleDateInput(e.target.value)}
           />
-          {errorMsg && <div className={styles.errorText}>{errorMsg}</div>}
-
+          {inputSide === 'date' && (
+            <Button icon={<DeleteRegular />} appearance="subtle" size="small" onClick={() => { if (dateInputRef.current) dateInputRef.current.value = ''; if (!tsInput) startLive() }}>清空</Button>
+          )}
+          {dateOutput && (
+            <div className={styles.precisionRow}>
+              <span className={styles.precisionValue}>{dateOutput}</span>
+              <Button icon={<CopyRegular />} appearance="subtle" size="small" onClick={() => copyText(dateOutput)} />
+            </div>
+          )}
           {msOutput && (
             <div className={styles.precisionRow}>
               <span className={styles.precisionLabel}>毫秒</span>
@@ -203,6 +207,25 @@ export default function TimestampView() {
               <span className={styles.precisionValue}>{nsOutput}</span>
               <Button icon={<CopyRegular />} appearance="subtle" size="small" onClick={() => copyText(nsOutput)} />
             </div>
+          )}
+        </div>
+
+        {/* Right: Timestamp */}
+        <div className={styles.textPanel}>
+          <div className={styles.panelTop}>
+            <span className={styles.panelTitle}>时间戳 (秒)</span>
+            {tsOutput && <Button icon={<CopyRegular />} appearance="subtle" size="small" onClick={() => copyText(tsOutput)}>复制</Button>}
+          </div>
+          <Input
+            value={live ? tsOutput : tsInput}
+            onFocus={handleTsFocus}
+            onChange={(_, d) => handleTsInput(d.value)}
+            placeholder="输入秒级时间戳..."
+            style={{ fontFamily: "'JetBrains Mono', Consolas, monospace" }}
+          />
+          {errorMsg && <div className={styles.errorText}>{errorMsg}</div>}
+          {inputSide === 'ts' && tsInput && (
+            <Button icon={<DeleteRegular />} appearance="subtle" size="small" onClick={() => { setTsInput(''); if (!dateInputRef.current?.value) startLive() }}>清空</Button>
           )}
         </div>
       </div>

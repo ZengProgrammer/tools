@@ -27,6 +27,13 @@
 - [x] 编译正式版、创建 GitHub Release v0.2.0
 - [x] 仓库设为公有
 
+### 2026-05-12 时间戳工具
+
+- [x] 创建 TimestampView.tsx — 实时时钟、双向转换、秒/毫秒/微秒/纳秒精度
+- [x] 集成到 HomeView（首页卡片）、Sidebar（导航）、AppLayout（挂载）、FloatingWindow（悬浮窗标签）
+- [x] TypeScript 零错误，Vite 构建通过
+- [x] 更新 planning-with-files 规划文件
+
 ### 下一阶段
 
 > 待规划
