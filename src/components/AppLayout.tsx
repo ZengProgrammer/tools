@@ -8,6 +8,7 @@ import HomeView from '../views/HomeView'
 import TranslateView from '../views/TranslateView'
 import JsonView from '../views/JsonView'
 import SqlView from '../views/SqlView'
+import TimestampView from '../views/TimestampView'
 
 const useStyles = makeStyles({
   container: {
@@ -59,6 +60,9 @@ export default function AppLayout() {
           </div>
           <div style={{ display: path === '/sql' ? 'block' : 'none', height: '100%' }}>
             <SqlView />
+          </div>
+          <div style={{ display: path === '/timestamp' ? 'block' : 'none', height: '100%' }}>
+            <TimestampView />
           </div>
         </main>
       </div>

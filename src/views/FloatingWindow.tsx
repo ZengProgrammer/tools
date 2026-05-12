@@ -2,10 +2,11 @@ import { useState, useEffect, useRef } from 'react'
 import { getCurrentWindow, LogicalSize } from '@tauri-apps/api/window'
 import { listen, type UnlistenFn } from '@tauri-apps/api/event'
 import { makeStyles, tokens } from '@fluentui/react-components'
-import { MicRegular, CodeRegular, DataAreaRegular, PinRegular } from '@fluentui/react-icons'
+import { MicRegular, CodeRegular, DataAreaRegular, ClockRegular, PinRegular } from '@fluentui/react-icons'
 import TranslateView from './TranslateView'
 import JsonView from './JsonView'
 import SqlView from './SqlView'
+import TimestampView from './TimestampView'
 
 const appWindow = getCurrentWindow()
 
@@ -13,6 +14,7 @@ const tools = [
   { name: '翻译', icon: MicRegular, key: 'translate', color: '#00f0ff' },
   { name: 'JSON', icon: CodeRegular, key: 'json', color: '#00ff41' },
   { name: 'SQL', icon: DataAreaRegular, key: 'sql', color: '#ff00ff' },
+  { name: '时间戳', icon: ClockRegular, key: 'timestamp', color: '#fcee0a' },
 ] as const
 
 const useStyles = makeStyles({
@@ -150,6 +152,9 @@ export default function FloatingWindow() {
           </div>
           <div style={{ display: activeKey === 'sql' ? 'block' : 'none', height: '100%' }}>
             <SqlView />
+          </div>
+          <div style={{ display: activeKey === 'timestamp' ? 'block' : 'none', height: '100%' }}>
+            <TimestampView />
           </div>
         </div>
       </div>

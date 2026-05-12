@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { Card, makeStyles, tokens } from '@fluentui/react-components'
-import { MicRegular, CodeRegular, DataAreaRegular } from '@fluentui/react-icons'
+import { MicRegular, CodeRegular, DataAreaRegular, ClockRegular } from '@fluentui/react-icons'
 
 const useStyles = makeStyles({
   home: {
@@ -109,6 +109,13 @@ const tools = [
     detail: '支持 SQLite、MySQL、PostgreSQL、TSQL、MariaDB 方言，关键字大小写切换。',
     route: '/sql',
     icon: DataAreaRegular,
+  },
+  {
+    name: '时间戳',
+    desc: '时间戳 / 日期时间双向转换',
+    detail: '支持秒/毫秒/微秒/纳秒，实时时钟，一键复制。',
+    route: '/timestamp',
+    icon: ClockRegular,
   },
 ]
 
