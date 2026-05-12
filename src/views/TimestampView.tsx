@@ -182,7 +182,6 @@ export default function TimestampView() {
         <div className={styles.textPanel}>
           <div className={styles.panelTop}>
             <span className={styles.panelTitle}>日期时间</span>
-            {dateOutput && <Button icon={<CopyRegular />} appearance="subtle" size="small" onClick={() => copyText(dateOutput)}>复制</Button>}
           </div>
           <input
             ref={dateInputRef}
@@ -194,12 +193,6 @@ export default function TimestampView() {
           />
           {inputSide === 'date' && (
             <Button icon={<DeleteRegular />} appearance="subtle" size="small" onClick={() => { if (dateInputRef.current) dateInputRef.current.value = ''; if (!tsInput) startLive() }}>清空</Button>
-          )}
-          {dateOutput && (
-            <div className={styles.precisionRow}>
-              <span className={styles.precisionValue}>{dateOutput}</span>
-              <Button icon={<CopyRegular />} appearance="subtle" size="small" onClick={() => copyText(dateOutput)} />
-            </div>
           )}
           {msOutput && (
             <div className={styles.precisionRow}>
@@ -240,6 +233,12 @@ export default function TimestampView() {
           {errorMsg && <div className={styles.errorText}>{errorMsg}</div>}
           {inputSide === 'ts' && tsInput && (
             <Button icon={<DeleteRegular />} appearance="subtle" size="small" onClick={() => { setTsInput(''); if (!dateInputRef.current?.value) startLive() }}>清空</Button>
+          )}
+          {dateOutput && (
+            <div className={styles.precisionRow}>
+              <span className={styles.precisionValue}>{dateOutput}</span>
+              <Button icon={<CopyRegular />} appearance="subtle" size="small" onClick={() => copyText(dateOutput)} />
+            </div>
           )}
         </div>
       </div>
