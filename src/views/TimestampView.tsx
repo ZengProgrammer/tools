@@ -182,6 +182,7 @@ export default function TimestampView() {
         <div className={styles.textPanel}>
           <div className={styles.panelTop}>
             <span className={styles.panelTitle}>日期时间</span>
+            {dateOutput && <Button icon={<CopyRegular />} appearance="subtle" size="small" onClick={() => copyText(dateOutput)}>复制</Button>}
           </div>
           <input
             ref={dateInputRef}
@@ -193,6 +194,25 @@ export default function TimestampView() {
           />
           {inputSide === 'date' && (
             <Button icon={<DeleteRegular />} appearance="subtle" size="small" onClick={() => { if (dateInputRef.current) dateInputRef.current.value = ''; if (!tsInput) startLive() }}>清空</Button>
+          )}
+        </div>
+
+        {/* Right: Timestamp + precision rows */}
+        <div className={styles.textPanel}>
+          <div className={styles.panelTop}>
+            <span className={styles.panelTitle}>时间戳 (秒)</span>
+            {tsOutput && <Button icon={<CopyRegular />} appearance="subtle" size="small" onClick={() => copyText(tsOutput)}>复制</Button>}
+          </div>
+          <Input
+            value={live ? tsOutput : tsInput}
+            onFocus={handleTsFocus}
+            onChange={(_, d) => handleTsInput(d.value)}
+            placeholder="输入秒级时间戳..."
+            style={{ fontFamily: "'JetBrains Mono', Consolas, monospace" }}
+          />
+          {errorMsg && <div className={styles.errorText}>{errorMsg}</div>}
+          {inputSide === 'ts' && tsInput && (
+            <Button icon={<DeleteRegular />} appearance="subtle" size="small" onClick={() => { setTsInput(''); if (!dateInputRef.current?.value) startLive() }}>清空</Button>
           )}
           {msOutput && (
             <div className={styles.precisionRow}>
@@ -213,31 +233,6 @@ export default function TimestampView() {
               <span className={styles.precisionLabel}>纳秒</span>
               <span className={styles.precisionValue}>{nsOutput}</span>
               <Button icon={<CopyRegular />} appearance="subtle" size="small" onClick={() => copyText(nsOutput)} />
-            </div>
-          )}
-        </div>
-
-        {/* Right: Timestamp */}
-        <div className={styles.textPanel}>
-          <div className={styles.panelTop}>
-            <span className={styles.panelTitle}>时间戳 (秒)</span>
-            {tsOutput && <Button icon={<CopyRegular />} appearance="subtle" size="small" onClick={() => copyText(tsOutput)}>复制</Button>}
-          </div>
-          <Input
-            value={live ? tsOutput : tsInput}
-            onFocus={handleTsFocus}
-            onChange={(_, d) => handleTsInput(d.value)}
-            placeholder="输入秒级时间戳..."
-            style={{ fontFamily: "'JetBrains Mono', Consolas, monospace" }}
-          />
-          {errorMsg && <div className={styles.errorText}>{errorMsg}</div>}
-          {inputSide === 'ts' && tsInput && (
-            <Button icon={<DeleteRegular />} appearance="subtle" size="small" onClick={() => { setTsInput(''); if (!dateInputRef.current?.value) startLive() }}>清空</Button>
-          )}
-          {dateOutput && (
-            <div className={styles.precisionRow}>
-              <span className={styles.precisionValue}>{dateOutput}</span>
-              <Button icon={<CopyRegular />} appearance="subtle" size="small" onClick={() => copyText(dateOutput)} />
             </div>
           )}
         </div>
