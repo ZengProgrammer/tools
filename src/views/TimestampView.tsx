@@ -168,12 +168,12 @@ export default function TimestampView() {
   return (
     <div className={styles.page}>
       <div className={styles.toolbar}>
+        <div className={styles.toolbarRight}>
+          {live && <span className={styles.liveBadge}>实时更新中...</span>}
+        </div>
         <div>
           <Button icon={<ArrowSyncRegular />} size="small" onClick={startLive}>刷新</Button>
           <Button size="small" appearance="primary" style={{ marginLeft: '8px' }} onClick={doConvert}>转换</Button>
-        </div>
-        <div className={styles.toolbarRight}>
-          {live && <span className={styles.liveBadge}>实时更新中...</span>}
         </div>
       </div>
 
