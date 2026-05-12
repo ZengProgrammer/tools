@@ -140,9 +140,12 @@ pub fn handle_menu_event(app: &tauri::AppHandle, event: tauri::menu::MenuEvent) 
                         let _ = w.show();
                         let _ = w.unminimize();
                         let _ = w.set_focus();
+                        let was_pinned = w.is_always_on_top().unwrap_or(false);
                         let _ = w.set_always_on_top(true);
                         std::thread::sleep(std::time::Duration::from_millis(50));
-                        let _ = w.set_always_on_top(false);
+                        if !was_pinned {
+                            let _ = w.set_always_on_top(false);
+                        }
                     }
                     *state.0.lock().unwrap() = AppMode::Desktop;
                     save_mode(&app.state::<DbState>(), &AppMode::Desktop);
