@@ -107,6 +107,20 @@ export default function TimestampView() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // Sync datetime-local input in live mode
+  useEffect(() => {
+    if (live && dateInputRef.current) {
+      const d = new Date(getNow() * 1000)
+      const y = d.getFullYear()
+      const mo = String(d.getMonth() + 1).padStart(2, '0')
+      const day = String(d.getDate()).padStart(2, '0')
+      const h = String(d.getHours()).padStart(2, '0')
+      const mi = String(d.getMinutes()).padStart(2, '0')
+      const s = String(d.getSeconds()).padStart(2, '0')
+      dateInputRef.current.value = `${y}-${mo}-${day}T${h}:${mi}:${s}`
+    }
+  }, [live, tsOutput])
+
   function handleTsFocus() {
     setInputSide('ts')
     stopLive()
