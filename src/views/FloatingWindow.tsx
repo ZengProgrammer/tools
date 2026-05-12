@@ -42,7 +42,6 @@ const useStyles = makeStyles({
   },
   petIcon: {
     width: '56px', height: '56px', borderRadius: '50%',
-    background: `linear-gradient(135deg, ${tokens.colorBrandBackground}, ${tokens.colorBrandBackgroundHover})`,
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     color: '#fff', fontSize: '26px', fontWeight: 700,
     animation: 'pet-pulse 2s ease-in-out infinite, pet-float 3s ease-in-out infinite',
@@ -178,7 +177,7 @@ export default function FloatingWindow() {
               toggleContent(activeKey)
             }
           }}>
-          <div className={styles.petIcon}>
+          <div className={styles.petIcon} style={{ background: `linear-gradient(135deg, ${tools.find(t => t.key === activeKey)?.color ?? '#00f0ff'}, ${tools.find(t => t.key === activeKey)?.color ?? '#00f0ff'}88)` }}>
             {(() => {
               const Icon = tools.find(t => t.key === activeKey)?.icon ?? tools[0].icon
               return <Icon fontSize={28} />
