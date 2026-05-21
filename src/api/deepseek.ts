@@ -106,3 +106,26 @@ export function deletePromptTemplate(id: number): Promise<void> {
 export function setDefaultPromptTemplate(id: number): Promise<void> {
   return invoke('set_default_prompt_template', { id })
 }
+
+// ---- Domain Checker ----
+
+export interface DnsResult { addresses: string[]; error: string | null }
+export interface PingStats { sent: number; received: number; lost: number; min_ms: number; max_ms: number; avg_ms: number }
+export interface PingResult { success: boolean; output: string; stats: PingStats | null }
+export interface SslResult {
+  valid: boolean; subject: string | null; issuer: string | null
+  not_before: string | null; not_after: string | null
+  days_remaining: number | null; error: string | null
+}
+
+export function resolveDns(domain: string): Promise<DnsResult> {
+  return invoke('resolve_dns', { domain })
+}
+
+export function pingDomain(domain: string): Promise<PingResult> {
+  return invoke('ping_domain', { domain })
+}
+
+export function checkSsl(domain: string): Promise<SslResult> {
+  return invoke('check_ssl', { domain })
+}

@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { Card, makeStyles, tokens } from '@fluentui/react-components'
-import { MicRegular, CodeRegular, DataAreaRegular, ClockRegular } from '@fluentui/react-icons'
+import { MicRegular, CodeRegular, DataAreaRegular, ClockRegular, GlobeRegular } from '@fluentui/react-icons'
 
 const useStyles = makeStyles({
   home: {
@@ -109,6 +109,13 @@ const tools = [
     detail: '支持 SQLite、MySQL、PostgreSQL、TSQL、MariaDB 方言，关键字大小写切换。',
     route: '/sql',
     icon: DataAreaRegular,
+  },
+  {
+    name: '域名检测',
+    desc: 'Ping / DNS / SSL 证书检测',
+    detail: '域名 Ping 连通性检测、DNS 解析 IP 地址、SSL 证书有效期检查。',
+    route: '/domain',
+    icon: GlobeRegular,
   },
   {
     name: '时间戳工具',

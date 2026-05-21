@@ -6,6 +6,7 @@ import {
   CodeRegular,
   DataAreaRegular,
   ClockRegular,
+  GlobeRegular,
   WeatherMoonRegular,
   WeatherSunnyRegular,
 } from '@fluentui/react-icons'
@@ -55,6 +56,7 @@ const navItems = [
   { path: '/translate', label: '翻译工具', icon: MicRegular },
   { path: '/json', label: 'JSON 工具', icon: CodeRegular },
   { path: '/sql', label: 'SQL 工具', icon: DataAreaRegular },
+  { path: '/domain', label: '域名检测', icon: GlobeRegular },
   { path: '/timestamp', label: '时间戳工具', icon: ClockRegular },
 ]
 

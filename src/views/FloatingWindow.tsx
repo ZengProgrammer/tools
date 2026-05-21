@@ -2,10 +2,11 @@ import { useState, useEffect, useRef } from 'react'
 import { getCurrentWindow, LogicalSize } from '@tauri-apps/api/window'
 import { listen, type UnlistenFn } from '@tauri-apps/api/event'
 import { makeStyles, tokens } from '@fluentui/react-components'
-import { MicRegular, CodeRegular, DataAreaRegular, ClockRegular, PinRegular } from '@fluentui/react-icons'
+import { MicRegular, CodeRegular, DataAreaRegular, ClockRegular, GlobeRegular, PinRegular } from '@fluentui/react-icons'
 import TranslateView from './TranslateView'
 import JsonView from './JsonView'
 import SqlView from './SqlView'
+import DomainView from './DomainView'
 import TimestampView from './TimestampView'
 
 const appWindow = getCurrentWindow()
@@ -14,6 +15,7 @@ const tools = [
   { name: '翻译', icon: MicRegular, key: 'translate', color: '#00f0ff' },
   { name: 'JSON', icon: CodeRegular, key: 'json', color: '#00ff41' },
   { name: 'SQL', icon: DataAreaRegular, key: 'sql', color: '#ff00ff' },
+  { name: '域名检测', icon: GlobeRegular, key: 'domain', color: '#00b8d4' },
   { name: '时间戳工具', icon: ClockRegular, key: 'timestamp', color: '#fcee0a' },
 ] as const
 
@@ -151,6 +153,9 @@ export default function FloatingWindow() {
           </div>
           <div style={{ display: activeKey === 'sql' ? 'block' : 'none', height: '100%' }}>
             <SqlView />
+          </div>
+          <div style={{ display: activeKey === 'domain' ? 'block' : 'none', height: '100%' }}>
+            <DomainView />
           </div>
           <div style={{ display: activeKey === 'timestamp' ? 'block' : 'none', height: '100%' }}>
             <TimestampView />

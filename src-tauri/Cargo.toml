@@ -22,3 +22,5 @@ tokio = { version = "1", features = ["full"] }
 rusqlite = { version = "0.31", features = ["bundled"] }
 chrono = "0.4"
 rfd = "0.15"
+native-tls = "0.2"
+x509-parser = "0.16"

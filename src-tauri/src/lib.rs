@@ -4,6 +4,7 @@ mod translate;
 mod autostart;
 mod tray;
 mod commands;
+mod domain;
 
 use std::sync::Mutex;
 use tauri::Manager;
@@ -94,6 +95,9 @@ pub fn run() {
             db::save_prompt_template,
             db::delete_prompt_template,
             db::set_default_prompt_template,
+            domain::resolve_dns,
+            domain::ping_domain,
+            domain::check_ssl,
             commands::get_app_mode,
             commands::enable_autostart_cmd,
             commands::open_tool_window,
