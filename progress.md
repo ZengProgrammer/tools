@@ -22,6 +22,13 @@
 
 - [x] task_plan.md + progress.md 同步最新状态
 
+### 2026-05-13 域名检测工具
+
+- [x] 新增 Rust 后端 domain.rs（DNS 解析、系统 Ping、原生 TLS SSL 证书检测）
+- [x] 创建 DomainView.tsx 前端（输入域名 → 并行检测 → 三栏结果展示）
+- [x] 集成 Home 卡片、Sidebar、AppLayout、FloatingWindow、托盘菜单
+- [x] TypeScript + Rust 零错误
+
 ### 下一阶段
 
 > 待规划

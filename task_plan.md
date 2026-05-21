@@ -21,6 +21,7 @@ v0.2.0 已完成并发布。基于 Tauri v2 + React 18 + Fluent UI v9。
 - [x] 固定窗口状态保持（切窗口不丢）
 - [x] GitHub Release 发布（MSI + NSIS）
 - [x] 仓库设为公有
+- [x] 域名检测工具（DNS 解析 + Ping + SSL 证书）
 - [x] CLAUDE.md 项目指南
 
 ## 待规划
